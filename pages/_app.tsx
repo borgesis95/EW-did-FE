@@ -1,5 +1,4 @@
 import type { ReactElement, ReactNode } from 'react';
-
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
 import Head from 'next/head';
@@ -13,7 +12,7 @@ import createEmotionCache from 'src/createEmotionCache';
 import { SidebarProvider } from 'src/contexts/SidebarContext';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-
+import './index.css';
 const clientSideEmotionCache = createEmotionCache();
 
 type NextPageWithLayout = NextPage & {

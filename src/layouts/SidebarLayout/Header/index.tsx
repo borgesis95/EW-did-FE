@@ -9,7 +9,8 @@ import {
   IconButton,
   Tooltip,
   styled,
-  useTheme
+  useTheme,
+  Button
 } from '@mui/material';
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import { SidebarContext } from 'src/contexts/SidebarContext';
@@ -73,6 +74,7 @@ function Header() {
       <Box display="flex" alignItems="center">
         <HeaderButtons />
         <HeaderUserbox />
+        <Button onClick={toggleSidebar}> icoa</Button>
         <Box
           component="span"
           sx={{
