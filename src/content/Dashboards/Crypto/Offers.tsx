@@ -15,6 +15,7 @@ import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import { useEffect, useState } from 'react';
 import AddOfferDialog, { IOfferForm } from '@/components/AddOfferDialog';
 import { Offers } from '@/models/offers';
+import { format } from 'date-fns';
 
 const AvatarWrapper = styled(Avatar)(
   ({ theme }) => `
@@ -98,14 +99,12 @@ function Offers({ blockchainParams }: OffersProps) {
   const handleConfirm = async (form: IOfferForm) => {
     const contract = blockchainParams.contract;
 
-    console.log('contract', contract.methods);
+    const asset = form.asset.split(':')[3];
+    const startDate = new Date(form.startDate).getTime();
+    const endDate = new Date(form.endDate).getTime();
+    console.log('asset', asset);
     await contract.methods
-      .createEnergyOffer(
-        '0x17d9c6D7834c35CedE6F63bD05A69E331cdDc77d',
-        form.price,
-        100,
-        1000
-      )
+      .createEnergyOffer(asset, form.price, startDate, endDate)
       .send({ from: blockchainParams.accounts[0] });
   };
 
@@ -129,8 +128,13 @@ function Offers({ blockchainParams }: OffersProps) {
 
   const renderOffer = () => {
     return offersList?.map((offer, index) => {
+      var startDate = new Date(offer.startDate);
+      console.log('start date', startDate);
+      const isValidStartDate =
+        startDate instanceof Date && !isNaN(startDate.valueOf());
+
       return (
-        <Grid key={offer.asset} xs={12} sm={6} md={3} item>
+        <Grid key={index} xs={12} sm={6} md={3} item>
           <Card
             key={index}
             sx={{
@@ -156,7 +160,7 @@ function Offers({ blockchainParams }: OffersProps) {
                   {offer.price}
                 </Typography>
                 <Typography variant="subtitle2" noWrap>
-                  startDate - end date
+                  {isValidStartDate && format(startDate, 'it')} - end date
                 </Typography>
               </Box>
             </CardContent>

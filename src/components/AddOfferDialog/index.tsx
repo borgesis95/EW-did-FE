@@ -6,6 +6,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { FormControl, MenuItem } from '@mui/material';
+import { DatePicker } from '@mui/lab';
 
 interface AddDerDialogProps {
   open: boolean;
@@ -15,18 +16,24 @@ interface AddDerDialogProps {
 
 const items = [
   {
-    label: 'did 1',
-    value: '2'
+    label: 'did:ethr:volta:0x26c7C921f5FF52B862357ced3084bB34b499AF33',
+    value: 'did:ethr:volta:0x26c7C921f5FF52B862357ced3084bB34b499AF33'
   },
   {
-    label: 'did 2',
-    value: '1'
+    label: 'did:ethr:volta:0xfBEf6719d378f985111Dba028d533044b59af0D0',
+    value: 'did:ethr:volta:0xfBEf6719d378f985111Dba028d533044b59af0D0'
+  },
+  {
+    label: 'did:ethr:volta:0x27D49f054844Ef69209c739E0a5A179915cCB51D',
+    value: 'did:ethr:volta:0x27D49f054844Ef69209c739E0a5A179915cCB51D'
   }
 ];
 
 export interface IOfferForm {
   price: number;
   asset: string;
+  startDate: string;
+  endDate: string;
 }
 
 function AddOfferDialog({
@@ -65,7 +72,7 @@ function AddOfferDialog({
             ))}
           </TextField>
           <TextField
-            style={{ marginTop: 20 }}
+            style={{ marginTop: 20, marginBottom: 20 }}
             id="outlined-number"
             label="Price"
             placeholder="Price"
@@ -75,6 +82,23 @@ function AddOfferDialog({
               shrink: true
             }}
           />
+
+          <div className="flex gap-2">
+            <DatePicker
+              value={form?.startDate}
+              label="Seleziona data inizio offerta"
+              className="mt-8"
+              renderInput={(params) => <TextField {...params} />}
+              onChange={(value) => handleChange('startDate', value)}
+            ></DatePicker>
+            <DatePicker
+              value={form?.endDate}
+              label="Seleziona data fine offerta"
+              className="mt-8"
+              renderInput={(params) => <TextField {...params} />}
+              onChange={(value) => handleChange('endDate', value)}
+            ></DatePicker>
+          </div>
         </FormControl>
       </DialogContent>
       <DialogActions>

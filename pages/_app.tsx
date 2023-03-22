@@ -12,14 +12,15 @@ import createEmotionCache from 'src/createEmotionCache';
 import { SidebarProvider } from 'src/contexts/SidebarContext';
 import './index.css';
 import Web3 from 'web3';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 import { AbiItem } from 'web3-utils';
 import { BlockchainContext } from '@/contexts/BlockchainContext';
-import { LocalizationProvider } from '@mui/x-date-pickers';
-export { EW_CONTRACT_ABI, EW_CONTRACT_ADDRESS } from '../contracts/ew_contract';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { EW_CONTRACT_ABI, EW_CONTRACT_ADDRESS } from '../contracts/ew_contract';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 
+export { EW_CONTRACT_ABI, EW_CONTRACT_ADDRESS } from '../contracts/ew_contract';
+import { EW_CONTRACT_ABI, EW_CONTRACT_ADDRESS } from '../contracts/ew_contract';
+import it from 'date-fns/locale/it';
 const clientSideEmotionCache = createEmotionCache();
 
 type NextPageWithLayout = NextPage & {
@@ -70,25 +71,25 @@ function DerManagementApp(props: DerManagementProps) {
   Router.events.on('routeChangeComplete', nProgress.done);
 
   return (
-    <BlockchainContext.Provider value={blockchainSettings}>
-      <CacheProvider value={emotionCache}>
-        <Head>
-          <title>DER MANAGMENT</title>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-          />
-        </Head>
-        <SidebarProvider>
-          <ThemeProvider>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
+    <LocalizationProvider dateAdapter={AdapterDateFns} locale={it}>
+      <BlockchainContext.Provider value={blockchainSettings}>
+        <CacheProvider value={emotionCache}>
+          <Head>
+            <title>DER MANAGMENT</title>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            />
+          </Head>
+          <SidebarProvider>
+            <ThemeProvider>
               <CssBaseline />
               {getLayout(<Component {...pageProps} />)}
-            </LocalizationProvider>
-          </ThemeProvider>
-        </SidebarProvider>
-      </CacheProvider>
-    </BlockchainContext.Provider>
+            </ThemeProvider>
+          </SidebarProvider>
+        </CacheProvider>
+      </BlockchainContext.Provider>
+    </LocalizationProvider>
   );
 }
 
