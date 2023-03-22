@@ -1,5 +1,6 @@
 import { alpha, createTheme, lighten, darken } from '@mui/material';
 import '@mui/lab/themeAugmentation';
+import { itIT } from '@mui/x-date-pickers';
 
 // import i18n from 'src/i18n/i18n';
 
@@ -1248,5 +1249,7 @@ export const PureLightTheme = createTheme({
     'none',
     'none',
     'none'
-  ]
+  ],
+
+  itIT
 });

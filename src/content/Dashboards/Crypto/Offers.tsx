@@ -12,6 +12,9 @@ import {
   styled
 } from '@mui/material';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
+import { useEffect, useState } from 'react';
+import AddOfferDialog, { IOfferForm } from '@/components/AddOfferDialog';
+import { Offers } from '@/models/offers';
 
 const AvatarWrapper = styled(Avatar)(
   ({ theme }) => `
@@ -31,7 +34,7 @@ const AvatarWrapper = styled(Avatar)(
     };
   
     img {
-      background: ${theme.colors.alpha.trueWhite[100]};
+      // background: ${theme.colors.alpha.trueWhite[100]};
       padding: ${theme.spacing(0.5)};
       display: block;
       border-radius: inherit;
@@ -74,42 +77,72 @@ const CardAddAction = styled(Card)(
 `
 );
 
-function Wallets() {
-  return (
-    <>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="space-between"
-        sx={{
-          pb: 3
-        }}
-      >
-        <Typography variant="h3">Wallets</Typography>
-        <Button
-          size="small"
-          variant="outlined"
-          startIcon={<AddTwoToneIcon fontSize="small" />}
-        >
-          Add new wallet
-        </Button>
-      </Box>
-      <Grid container spacing={3}>
-        <Grid xs={12} sm={6} md={3} item>
+interface OffersProps {
+  blockchainParams: any;
+}
+
+function Offers({ blockchainParams }: OffersProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [offersList, setOffersList] = useState<Offers[]>();
+
+  useEffect(() => {
+    if (blockchainParams) {
+      fetchMyOffers();
+    }
+  }, [blockchainParams]);
+
+  const handleDialogToggle = () => {
+    setIsDialogOpen(!isDialogOpen);
+  };
+
+  const handleConfirm = async (form: IOfferForm) => {
+    const contract = blockchainParams.contract;
+
+    console.log('contract', contract.methods);
+    await contract.methods
+      .createEnergyOffer(
+        '0x17d9c6D7834c35CedE6F63bD05A69E331cdDc77d',
+        form.price,
+        100,
+        1000
+      )
+      .send({ from: blockchainParams.accounts[0] });
+  };
+
+  const fetchMyOffers = async () => {
+    const contract = blockchainParams.contract;
+    const res = await contract.methods.getOffers().call();
+
+    const offersMapped: Offers[] = res.map((item) => {
+      const res = item;
+      return {
+        asset: res.asset,
+        price: res.price,
+        startDate: res.startDate,
+        endDate: res.endDate
+      };
+    });
+
+    console.log('offersMaped', offersMapped);
+    setOffersList(offersMapped);
+  };
+
+  const renderOffer = () => {
+    return offersList?.map((offer, index) => {
+      return (
+        <Grid key={offer.asset} xs={12} sm={6} md={3} item>
           <Card
+            key={index}
             sx={{
               px: 1
             }}
           >
             <CardContent>
               <AvatarWrapper>
-                <img
-                  alt="BTC"
-                  src="/static/images/placeholders/logo/bitcoin.png"
-                />
+                <img alt="BTC" src="/static/images/ew-logo.png" />
               </AvatarWrapper>
               <Typography variant="h5" noWrap>
-                Bitcoin
+                {offer.asset}
               </Typography>
               <Typography variant="subtitle1" noWrap>
                 BTC
@@ -120,86 +153,43 @@ function Wallets() {
                 }}
               >
                 <Typography variant="h3" gutterBottom noWrap>
-                  $3,586.22
+                  {offer.price}
                 </Typography>
                 <Typography variant="subtitle2" noWrap>
-                  1.25843 BTC
+                  startDate - end date
                 </Typography>
               </Box>
             </CardContent>
           </Card>
         </Grid>
+      );
+    });
+  };
+
+  return (
+    <>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
+        sx={{
+          pb: 3
+        }}
+      >
+        <Typography variant="h3">Offers</Typography>
+        <Button
+          size="small"
+          variant="outlined"
+          startIcon={<AddTwoToneIcon fontSize="small" />}
+        >
+          Add new offer
+        </Button>
+      </Box>
+      <Grid container spacing={3}>
+        {renderOffer()}
         <Grid xs={12} sm={6} md={3} item>
-          <Card
-            sx={{
-              px: 1
-            }}
-          >
-            <CardContent>
-              <AvatarWrapper>
-                <img
-                  alt="Ripple"
-                  src="/static/images/placeholders/logo/ripple.png"
-                />
-              </AvatarWrapper>
-              <Typography variant="h5" noWrap>
-                Ripple
-              </Typography>
-              <Typography variant="subtitle1" noWrap>
-                XRP
-              </Typography>
-              <Box
-                sx={{
-                  pt: 3
-                }}
-              >
-                <Typography variant="h3" gutterBottom noWrap>
-                  $586.83
-                </Typography>
-                <Typography variant="subtitle2" noWrap>
-                  5,783 XRP
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid xs={12} sm={6} md={3} item>
-          <Card
-            sx={{
-              px: 1
-            }}
-          >
-            <CardContent>
-              <AvatarWrapper>
-                <img
-                  alt="Cardano"
-                  src="/static/images/placeholders/logo/cardano.png"
-                />
-              </AvatarWrapper>
-              <Typography variant="h5" noWrap>
-                Cardano
-              </Typography>
-              <Typography variant="subtitle1" noWrap>
-                ADA
-              </Typography>
-              <Box
-                sx={{
-                  pt: 3
-                }}
-              >
-                <Typography variant="h3" gutterBottom noWrap>
-                  $54,985.00
-                </Typography>
-                <Typography variant="subtitle2" noWrap>
-                  34,985 ADA
-                </Typography>
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid xs={12} sm={6} md={3} item>
-          <Tooltip arrow title="Click to add a new wallet">
-            <CardAddAction>
+          <Tooltip arrow title="Click to add a new offer">
+            <CardAddAction onClick={handleDialogToggle}>
               <CardActionArea
                 sx={{
                   px: 1
@@ -215,8 +205,13 @@ function Wallets() {
           </Tooltip>
         </Grid>
       </Grid>
+      <AddOfferDialog
+        handleToggle={handleDialogToggle}
+        handleConfirm={handleConfirm}
+        open={isDialogOpen}
+      />
     </>
   );
 }
 
-export default Wallets;
+export default Offers;

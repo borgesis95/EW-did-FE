@@ -11,20 +11,36 @@ import { Asset } from 'iam-client-lib';
 import { format } from 'date-fns';
 import CircularProgress from '@mui/material/CircularProgress';
 import Button from '@mui/material/Button';
+import AddDerDialog from '../AddDerDialog';
 
 interface DIDTableProps {
   assets: Asset[];
   loading: boolean;
+  onCreateAsset: () => void;
 }
 
-function DIDTable({ assets, loading }: DIDTableProps) {
+function DIDTable({ assets, loading, onCreateAsset }: DIDTableProps) {
+  const [isDialogOpen, setDialogOpen] = React.useState<boolean>(false);
+
+  const handleDialog = () => {
+    setDialogOpen(!isDialogOpen);
+  };
+
+  const handleConfirm = () => {
+    console.log('CHIAMARE API');
+    handleDialog();
+    onCreateAsset();
+  };
+
   return (
     <>
       <div className="mb-4 flex justify-between  bg-red">
         <Typography variant="h3" component="h3">
-          Miei dispositivi
+          My devices
         </Typography>
-        <Button variant="contained">Aggiungi DER</Button>
+        <Button variant="contained" onClick={handleDialog}>
+          Aggiungi DER
+        </Button>
       </div>
       {!loading ? (
         <TableContainer component={Paper}>
@@ -57,6 +73,11 @@ function DIDTable({ assets, loading }: DIDTableProps) {
           <CircularProgress className="flex justify-center" />
         </div>
       )}
+      <AddDerDialog
+        open={isDialogOpen}
+        handleConfirm={handleConfirm}
+        handleToggle={handleDialog}
+      />
     </>
   );
 }
