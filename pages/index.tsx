@@ -21,6 +21,7 @@ import {
 } from 'iam-client-lib';
 import DIDTable from '@/components/DIDTable';
 import { BlockchainContext } from '@/contexts/BlockchainContext';
+import Demands from '@/content/Dashboards/Crypto/Demands';
 
 interface DataAssets {
   loading: boolean;
@@ -97,6 +98,9 @@ function DashboardMicrogrid() {
 
             <Grid item lg={12} xs={12}>
               <Offers blockchainParams={blockchainParams} />
+            </Grid>
+            <Grid item lg={12} xs={12}>
+              <Demands blockchainParams={blockchainParams} />
             </Grid>
           </Grid>
         </Container>

@@ -62,8 +62,6 @@ function DerManagementApp(props: DerManagementProps) {
     });
   };
 
-  const callContract = () => {};
-
   const getLayout = Component.getLayout ?? ((page) => page);
 
   Router.events.on('routeChangeStart', nProgress.start);
