@@ -5,7 +5,7 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { FormControl, FormControls } from '@mui/material';
+import { FormControl } from '@mui/material';
 
 interface AddRequestdialog {
   open: boolean;
@@ -14,7 +14,8 @@ interface AddRequestdialog {
 }
 
 export interface IRequestForm {
-  kw: number;
+  quantityEnergy: number;
+  price: number;
 }
 
 function AddRequestDialog({
@@ -47,6 +48,17 @@ function AddRequestDialog({
             placeholder="KW necessary"
             type="number"
             onChange={(e) => handleChange('kw', e.target.value)}
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+          <TextField
+            style={{ marginTop: 20, marginBottom: 20 }}
+            id="outlined-number"
+            label="price  max"
+            placeholder="price max"
+            type="number"
+            onChange={(e) => handleChange('price', e.target.value)}
             InputLabelProps={{
               shrink: true
             }}

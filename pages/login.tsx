@@ -1,3 +1,4 @@
+import { axios_instance } from '@/config/axios_config';
 import {
   Box,
   Card,
@@ -12,6 +13,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import type { ReactElement } from 'react';
 import BaseLayout from 'src/layouts/BaseLayout';
+import Web3 from 'web3';
 
 const MainContent = styled(Box)(
   () => `
@@ -40,9 +42,23 @@ const LoginWrapper = styled('div')(
     `
 );
 
+let web3: Web3 | undefined = undefined; // Will hold the web3 instance
+
 function Login() {
   let signerService: SignerService;
   const router = useRouter();
+
+  const initWeb3 = async () => {
+    if (!web3) {
+      try {
+        await (window as any).ethereum.enable();
+        web3 = new Web3((window as any).ethereum);
+      } catch (error) {
+        window.alert('You need to allow MetaMask.');
+        return;
+      }
+    }
+  };
 
   const initSignerService = async function (providerType: ProviderType) {
     switch (providerType) {
@@ -54,13 +70,50 @@ function Login() {
   };
 
   const onLogin = async (providerType: ProviderType) => {
-    const { signerService: signService } = await initSignerService(
-      providerType
-    );
-    signerService = signService;
-    if (signerService) {
-      router.push('/');
+    // const { signerService: signService } = await initSignerService(
+    //   providerType
+    // );
+    // signerService = signService;
+
+    await initWeb3();
+    const publicAddress = await web3.eth.getCoinbase();
+    console.log(publicAddress);
+
+    axios_instance
+      .get<{ nonce: string }>(`user/${publicAddress}`)
+      .then((response) => {
+        handleSignMessage(publicAddress, response.data.nonce);
+      });
+  };
+
+  const handleSignMessage = async (address: string, nonce: string) => {
+    try {
+      const signature = await web3!.eth.personal.sign(
+        `nonce_${nonce}`,
+        address,
+        ''
+      );
+
+      handleAuthenticate(address, signature);
+      // return { address, signature };
+    } catch (err) {
+      throw new Error('You need to sign the message to be able to log in.');
     }
+  };
+
+  const handleAuthenticate = async (address: string, signature: string) => {
+    console.log('address,', address);
+    console.log('signaturssse:', signature);
+
+    const body = {
+      address: address,
+      msg: signature
+    };
+
+    console.log('body', body);
+    axios_instance.post(`user/auth`, body).then((response) => {});
+
+    // CALL API
   };
 
   return (
@@ -71,8 +124,13 @@ function Login() {
       <MainContent>
         <TopWrapper>
           <Container maxWidth="md">
-            <Box textAlign="center">
-              <img alt="ewlogo" height={180} src="/static/images/ew-logo.png" />
+            <Box textAlign="center" className="flex justify-center">
+              <img
+                alt="ewlogo"
+                height={180}
+                width={180}
+                src="/static/images/ew-logo.png"
+              />
             </Box>
             <Container maxWidth="sm">
               <Card sx={{ textAlign: 'center', mt: 3, p: 4 }}>

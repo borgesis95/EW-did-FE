@@ -13,7 +13,6 @@ import {
 } from '@mui/material';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import { useEffect, useState } from 'react';
-import { Demands } from '@/models/Demands';
 import { format } from 'date-fns';
 import AddRequestDialog, { IRequestForm } from '@/components/AddRequestDialog';
 
@@ -84,11 +83,11 @@ interface DemandsProps {
 
 function Demands({ blockchainParams }: DemandsProps) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [DemandsList, setDemandsList] = useState<Demands[]>();
+  const [DemandsList, setDemandsList] = useState<IRequestForm[]>();
 
   useEffect(() => {
     if (blockchainParams) {
-      //   fetchMyDemands();
+      fetchMyDemands();
     }
   }, [blockchainParams]);
 
@@ -98,21 +97,23 @@ function Demands({ blockchainParams }: DemandsProps) {
 
   const handleConfirm = async (form: IRequestForm) => {
     const contract = blockchainParams.contract;
-    console.log('price', form.kw);
+
+    await contract.methods
+      .createEnergyDemands(form.price, form.quantityEnergy)
+      .send({ from: blockchainParams.accounts[0] });
     handleDialogToggle();
   };
 
   const fetchMyDemands = async () => {
     const contract = blockchainParams.contract;
-    const res = await contract.methods.getDemands().call();
+    const res = await contract.methods.getEnergyRequest().call();
 
-    const DemandsMapped: Demands[] = res.map((item) => {
+    console.log('res', res);
+    const DemandsMapped: IRequestForm[] = res.map((item) => {
       const res = item;
       return {
-        asset: res.asset,
         price: res.price,
-        startDate: res.startDate,
-        endDate: res.endDate
+        quantityEnergy: res.quantityEnergy
       };
     });
 
@@ -121,11 +122,7 @@ function Demands({ blockchainParams }: DemandsProps) {
   };
 
   const renderDemands = () => {
-    return DemandsList?.map((offer, index) => {
-      var startDate = new Date(offer.startDate);
-      const isValidStartDate =
-        startDate instanceof Date && !isNaN(startDate.valueOf());
-
+    return DemandsList?.map((request, index) => {
       return (
         <Grid key={index} xs={12} sm={6} md={3} item>
           <Card
@@ -138,22 +135,16 @@ function Demands({ blockchainParams }: DemandsProps) {
               <AvatarWrapper>
                 <img alt="BTC" src="/static/images/ew-logo.png" />
               </AvatarWrapper>
-              <Typography variant="h5" noWrap>
-                {offer.asset}
-              </Typography>
-              <Typography variant="subtitle1" noWrap>
-                BTC
-              </Typography>
               <Box
                 sx={{
                   pt: 3
                 }}
               >
                 <Typography variant="h3" gutterBottom noWrap>
-                  {offer.price}
+                  {request.quantityEnergy} KW
                 </Typography>
                 <Typography variant="subtitle2" noWrap>
-                  {isValidStartDate && format(startDate, 'it')} - end date
+                  {request.price} €
                 </Typography>
               </Box>
             </CardContent>
@@ -178,7 +169,7 @@ function Demands({ blockchainParams }: DemandsProps) {
       <Grid container spacing={3}>
         {renderDemands()}
         <Grid xs={12} sm={6} md={3} item>
-          <Tooltip arrow title="Click to add a new offer">
+          <Tooltip arrow title="Click to add a new request">
             <CardAddAction onClick={handleDialogToggle}>
               <CardActionArea
                 sx={{

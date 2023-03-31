@@ -32,6 +32,7 @@ const items = [
 export interface IOfferForm {
   price: number;
   asset: string;
+  quantity: string;
   startDate: string;
   endDate: string;
 }
@@ -78,6 +79,18 @@ function AddOfferDialog({
             placeholder="Price"
             type="number"
             onChange={(e) => handleChange('price', e.target.value)}
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+
+          <TextField
+            style={{ marginTop: 20, marginBottom: 20 }}
+            id="outlined-number"
+            label="quantity"
+            placeholder="quantity"
+            type="number"
+            onChange={(e) => handleChange('quantity', e.target.value)}
             InputLabelProps={{
               shrink: true
             }}

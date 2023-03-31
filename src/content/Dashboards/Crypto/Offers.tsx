@@ -103,9 +103,13 @@ function Offers({ blockchainParams }: OffersProps) {
     const startDate = new Date(form.startDate).getTime();
     const endDate = new Date(form.endDate).getTime();
     console.log('asset', asset);
+
+    console.log('startDate', startDate);
     await contract.methods
-      .createEnergyOffer(asset, form.price, startDate, endDate)
+      .createEnergyOffer(asset, form.price, startDate, endDate, form.quantity)
       .send({ from: blockchainParams.accounts[0] });
+
+    handleDialogToggle();
   };
 
   const fetchMyOffers = async () => {
@@ -128,10 +132,11 @@ function Offers({ blockchainParams }: OffersProps) {
 
   const renderOffer = () => {
     return offersList?.map((offer, index) => {
-      var startDate = new Date(offer.startDate);
-      console.log('start date', startDate);
-      const isValidStartDate =
-        startDate instanceof Date && !isNaN(startDate.valueOf());
+      const startDate = format(
+        new Date(parseInt(offer.startDate)),
+        'dd/MM/yyyy'
+      );
+      const endDate = format(new Date(parseInt(offer.endDate)), 'dd/MM/yyyy');
 
       return (
         <Grid key={index} xs={12} sm={6} md={3} item>
@@ -160,7 +165,7 @@ function Offers({ blockchainParams }: OffersProps) {
                   {offer.price}
                 </Typography>
                 <Typography variant="subtitle2" noWrap>
-                  {isValidStartDate && format(startDate, 'it')} - end date
+                  {startDate} - {endDate}
                 </Typography>
               </Box>
             </CardContent>
@@ -181,13 +186,6 @@ function Offers({ blockchainParams }: OffersProps) {
         }}
       >
         <Typography variant="h3">Offers</Typography>
-        <Button
-          size="small"
-          variant="outlined"
-          startIcon={<AddTwoToneIcon fontSize="small" />}
-        >
-          Add new offer
-        </Button>
       </Box>
       <Grid container spacing={3}>
         {renderOffer()}
