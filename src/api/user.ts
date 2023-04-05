@@ -3,7 +3,7 @@
 import axios from '@/config/axios_instance';
 
 export interface RegistrationUser {
-  username: string;
+  nickname: string;
   email: string;
 }
 

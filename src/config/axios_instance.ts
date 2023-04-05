@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import Cookie from 'js-cookie';
 const instance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BASE_URL
 });
@@ -7,11 +7,11 @@ const instance = axios.create({
 instance.interceptors.request.use(
   (config) => {
     console.log('interceptors');
-    const token = localStorage.getItem('accesstoken');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
+    const cookies = Cookie.get('user') ? JSON.parse(Cookie.get('user')) : null;
 
+    if (cookies.jwt) {
+      config.headers['Authorization'] = `Bearer ${cookies.jwt}`;
+    }
     return config;
   },
 

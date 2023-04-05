@@ -5,11 +5,17 @@ export enum SourceEnergyEnum {
   Wind = 2
 }
 
-export interface CreateAssetsRequest {
+export interface AssetDto {
+  //TODO: Aggiungere DID
   address: string;
   source: SourceEnergyEnum;
+  nickname: string;
 }
 
-export const createAssetApi = (body: CreateAssetsRequest) => {
+export const createAssetApi = (body: AssetDto) => {
   return axios.post(`assets/new`, body);
+};
+
+export const getAssetsApi = () => {
+  return axios.get(`assets/list`);
 };

@@ -27,7 +27,6 @@ function DIDTable({ assets, loading, onCreateAsset }: DIDTableProps) {
   };
 
   const handleConfirm = () => {
-    console.log('CHIAMARE API');
     handleDialog();
     onCreateAsset();
   };

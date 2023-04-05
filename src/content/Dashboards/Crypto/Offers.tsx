@@ -124,7 +124,6 @@ function Offers({ blockchainParams }: OffersProps) {
       };
     });
 
-    console.log('offersMaped', offersMapped);
     setOffersList(offersMapped);
   };
 

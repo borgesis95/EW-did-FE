@@ -1,31 +1,26 @@
 import {
   Button,
-  Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
-  DialogTitleProps,
-  IconButton,
   MenuItem,
   Select,
-  TextField,
-  styled
+  TextField
 } from '@mui/material';
 import { StyledDialog, StyledDialogTitle } from '../Dialog/CDialog';
 import { useState } from 'react';
-import { CreateAssetsRequest, SourceEnergyEnum } from '@/api/assets';
+import { AssetDto, SourceEnergyEnum, createAssetApi } from '@/api/assets';
 interface AddAssetDialogProps {
   open: boolean;
   handleToggle: () => void;
-  handleConfirm: () => void;
+  onSuccess: () => void;
 }
 
 function AddAssetDialog({
   open,
   handleToggle,
-  handleconfirm
+  onSuccess
 }: AddAssetDialogProps) {
-  const [bodyAsset, setBodyAsset] = useState<CreateAssetsRequest>();
+  const [bodyAsset, setBodyAsset] = useState<AssetDto>();
 
   const handleChange = (key: string, value: string | SourceEnergyEnum) => {
     setBodyAsset({
@@ -35,7 +30,10 @@ function AddAssetDialog({
   };
 
   const handleConfirm = () => {
-    console.log('body', bodyAsset);
+    createAssetApi(bodyAsset).then((response) => {
+      console.log('response create asset:', response);
+      onSuccess();
+    });
   };
 
   return (
@@ -50,7 +48,7 @@ function AddAssetDialog({
             id="deviceNickname"
             label="Nickname device"
             variant="outlined"
-            onChange={(e) => handleChange('name', e.target.value)}
+            onChange={(e) => handleChange('nickname', e.target.value)}
           />
           <Select
             className="col-span-12"

@@ -63,7 +63,6 @@ function DashboardMicrogrid() {
       loading: true
     });
     const response = await assService?.registerAsset();
-    console.log('response', response);
     fetchAssets();
   };
   return (

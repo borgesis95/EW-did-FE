@@ -108,7 +108,6 @@ function Demands({ blockchainParams }: DemandsProps) {
     const contract = blockchainParams.contract;
     const res = await contract.methods.getEnergyRequest().call();
 
-    console.log('res', res);
     const DemandsMapped: IRequestForm[] = res.map((item) => {
       const res = item;
       return {
@@ -117,7 +116,6 @@ function Demands({ blockchainParams }: DemandsProps) {
       };
     });
 
-    console.log('DemandsMaped', DemandsMapped);
     setDemandsList(DemandsMapped);
   };
 
