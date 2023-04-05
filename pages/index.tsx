@@ -1,17 +1,8 @@
 import Head from 'next/head';
 import { useContext } from 'react';
-
 import SidebarLayout from '@/layouts/SidebarLayout';
-
-import PageHeader from '@/content/Dashboards/Crypto/PageHeader';
-import PageTitleWrapper from '@/components/PageTitleWrapper';
 import { Container, Grid } from '@mui/material';
-import Footer from '@/components/Footer';
-
-import AccountBalance from '@/content/Dashboards/Crypto/AccountBalance';
 import Offers from '@/content/Dashboards/Crypto/Offers';
-import AccountSecurity from '@/content/Dashboards/Crypto/AccountSecurity';
-import WatchList from '@/content/Dashboards/Crypto/WatchList';
 import { useEffect, useState } from 'react';
 import {
   Asset,

@@ -8,6 +8,7 @@
     "eslint-disable-next-line": "off",
     "react-hooks/exhaustive-deps": "off",
     "react/no-unescaped-entities": "off",
+    "@next/next/no-document-import-in-page": "off",
     "react/jsx-max-props-per-line": [
       1,
       {
