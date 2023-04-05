@@ -13,6 +13,7 @@ import {
 import DIDTable from '@/components/DIDTable';
 import { BlockchainContext } from '@/contexts/BlockchainContext';
 import Demands from '@/content/Dashboards/Crypto/Demands';
+import Assets from '@/content/Dashboards/Crypto/Assets';
 
 interface DataAssets {
   loading: boolean;
@@ -78,13 +79,17 @@ function DashboardMicrogrid() {
             justifyContent="center"
             alignItems="stretch"
             spacing={4}
+            paddingTop={10}
           >
-            <Grid item lg={12} paddingTop={20}>
+            {/* <Grid item lg={12} paddingTop={20}>
               <DIDTable
                 onCreateAsset={onCreateAsset}
                 loading={assets?.loading}
                 assets={assets?.assets}
               />
+            </Grid> */}
+            <Grid item lg={12} paddingTop={20}>
+              <Assets blockchainParams={null} />
             </Grid>
 
             <Grid item lg={12} xs={12}>

@@ -17,7 +17,7 @@ import AddOfferDialog, { IOfferForm } from '@/components/AddOfferDialog';
 import { Offers } from '@/models/offers';
 import { format } from 'date-fns';
 
-const AvatarWrapper = styled(Avatar)(
+export const AvatarWrapper = styled(Avatar)(
   ({ theme }) => `
     margin: ${theme.spacing(2, 0, 1, -0.5)};
     display: flex;
@@ -54,7 +54,7 @@ const AvatarAddWrapper = styled(Avatar)(
 `
 );
 
-const CardAddAction = styled(Card)(
+export const CardAddAction = styled(Card)(
   ({ theme }) => `
         border: ${theme.colors.primary.main} dashed 1px;
         height: 100%;
@@ -102,9 +102,7 @@ function Offers({ blockchainParams }: OffersProps) {
     const asset = form.asset.split(':')[3];
     const startDate = new Date(form.startDate).getTime();
     const endDate = new Date(form.endDate).getTime();
-    console.log('asset', asset);
 
-    console.log('startDate', startDate);
     await contract.methods
       .createEnergyOffer(asset, form.price, startDate, endDate, form.quantity)
       .send({ from: blockchainParams.accounts[0] });
