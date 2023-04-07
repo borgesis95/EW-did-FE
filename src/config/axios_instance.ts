@@ -9,7 +9,7 @@ instance.interceptors.request.use(
     console.log('interceptors');
     const cookies = Cookie.get('user') ? JSON.parse(Cookie.get('user')) : null;
 
-    if (cookies.jwt) {
+    if (cookies && cookies.jwt) {
       config.headers['Authorization'] = `Bearer ${cookies.jwt}`;
     }
     return config;

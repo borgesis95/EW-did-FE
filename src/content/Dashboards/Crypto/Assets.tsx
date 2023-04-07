@@ -16,6 +16,10 @@ import { AvatarWrapper, CardAddAction } from './Offers';
 import { useEffect, useState } from 'react';
 import AddAssetDialog from '@/components/AddAssetDialog/AddAssetDialog';
 import { AssetDto, SourceEnergyEnum, getAssetsApi } from '@/api/assets';
+import { useDispatch } from 'react-redux';
+import { fetchAssetsList, selectAssets } from '@/store/slices/assets.slice';
+import { useSelector } from 'react-redux';
+import { AppDispatch } from '@/store';
 
 interface AssetsProps {
   blockchainParams: any;
@@ -23,16 +27,16 @@ interface AssetsProps {
 
 function Assets({ blockchainParams }: AssetsProps) {
   const [isCreateAssetOpen, setIsCreateAssetOpen] = useState<boolean>(false);
-  const [assetsList, setAssetsList] = useState<AssetDto[]>();
+
+  const dispatch = useDispatch<AppDispatch>();
+  const assets = useSelector(selectAssets);
 
   useEffect(() => {
     fetchAssets();
   }, []);
 
   const fetchAssets = () => {
-    getAssetsApi().then((response) => {
-      setAssetsList(response.data.data);
-    });
+    dispatch(fetchAssetsList());
   };
 
   const handleDialogToggle = () => {
@@ -44,7 +48,7 @@ function Assets({ blockchainParams }: AssetsProps) {
   };
 
   const renderAssetList = () => {
-    return assetsList?.map((asset, index) => {
+    return assets?.map((asset, index) => {
       return (
         <Grid key={index} xs={12} sm={6} md={3} item>
           <Card
@@ -107,11 +111,6 @@ function Assets({ blockchainParams }: AssetsProps) {
         handleToggle={handleConfirmCreationAssets}
         open={isCreateAssetOpen}
       ></AddAssetDialog>
-      {/* <AddOfferDialog
-      handleToggle={handleDialogToggle}
-      handleConfirm={handleConfirm}
-      open={isDialogOpen}
-    /> */}
     </>
   );
 }

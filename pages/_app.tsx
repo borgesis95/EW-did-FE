@@ -21,6 +21,8 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 export { EW_CONTRACT_ABI, EW_CONTRACT_ADDRESS } from '../contracts/ew_contract';
 import { EW_CONTRACT_ABI, EW_CONTRACT_ADDRESS } from '../contracts/ew_contract';
 import it from 'date-fns/locale/it';
+import { Provider } from 'react-redux';
+import store from '@/store';
 const clientSideEmotionCache = createEmotionCache();
 
 type NextPageWithLayout = NextPage & {
@@ -69,25 +71,27 @@ function DerManagementApp(props: DerManagementProps) {
   Router.events.on('routeChangeComplete', nProgress.done);
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns} locale={it}>
-      <BlockchainContext.Provider value={blockchainSettings}>
-        <CacheProvider value={emotionCache}>
-          <Head>
-            <title>DER MANAGMENT</title>
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1, shrink-to-fit=no"
-            />
-          </Head>
-          <SidebarProvider>
-            <ThemeProvider>
-              <CssBaseline />
-              {getLayout(<Component {...pageProps} />)}
-            </ThemeProvider>
-          </SidebarProvider>
-        </CacheProvider>
-      </BlockchainContext.Provider>
-    </LocalizationProvider>
+    <Provider store={store}>
+      <LocalizationProvider dateAdapter={AdapterDateFns} locale={it}>
+        <BlockchainContext.Provider value={blockchainSettings}>
+          <CacheProvider value={emotionCache}>
+            <Head>
+              <title>DER MANAGMENT</title>
+              <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1, shrink-to-fit=no"
+              />
+            </Head>
+            <SidebarProvider>
+              <ThemeProvider>
+                <CssBaseline />
+                {getLayout(<Component {...pageProps} />)}
+              </ThemeProvider>
+            </SidebarProvider>
+          </CacheProvider>
+        </BlockchainContext.Provider>
+      </LocalizationProvider>
+    </Provider>
   );
 }
 

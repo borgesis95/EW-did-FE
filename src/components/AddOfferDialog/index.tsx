@@ -7,27 +7,14 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { FormControl, MenuItem } from '@mui/material';
 import { DatePicker } from '@mui/lab';
+import { useSelector } from 'react-redux';
+import { selectAssets } from '@/store/slices/assets.slice';
 
 interface AddDerDialogProps {
   open: boolean;
   handleToggle: () => void;
   handleConfirm: (form: IOfferForm) => void;
 }
-
-const items = [
-  {
-    label: 'did:ethr:volta:0x26c7C921f5FF52B862357ced3084bB34b499AF33',
-    value: 'did:ethr:volta:0x26c7C921f5FF52B862357ced3084bB34b499AF33'
-  },
-  {
-    label: 'did:ethr:volta:0xfBEf6719d378f985111Dba028d533044b59af0D0',
-    value: 'did:ethr:volta:0xfBEf6719d378f985111Dba028d533044b59af0D0'
-  },
-  {
-    label: 'did:ethr:volta:0x27D49f054844Ef69209c739E0a5A179915cCB51D',
-    value: 'did:ethr:volta:0x27D49f054844Ef69209c739E0a5A179915cCB51D'
-  }
-];
 
 export interface IOfferForm {
   price: number;
@@ -43,6 +30,8 @@ function AddOfferDialog({
   handleConfirm
 }: AddDerDialogProps) {
   const [form, setForm] = React.useState<IOfferForm>();
+
+  const assets = useSelector(selectAssets);
 
   const handleChange = (key: string, value: number | string) => {
     setForm({
@@ -66,9 +55,9 @@ function AddOfferDialog({
             label="Select"
             onChange={(e) => handleChange('asset', e.target.value)}
           >
-            {items.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.label}
+            {assets.map((option) => (
+              <MenuItem key={option.nickname} value={option.nickname}>
+                {option.nickname}
               </MenuItem>
             ))}
           </TextField>

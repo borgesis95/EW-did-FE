@@ -27,7 +27,8 @@ export function middleware(request: NextRequest) {
     }
 
     /* User is not available on the cookie then go to login */
-  } else if (authRoutes.includes(request.nextUrl.pathname)) {
+  } else if (protectedRoutes.includes(request.nextUrl.pathname)) {
+    console.log('qui');
     const response = NextResponse.redirect(new URL('/login', request.url));
     return response;
   }
