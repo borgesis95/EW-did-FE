@@ -7,6 +7,29 @@ export interface RegistrationUser {
   email: string;
 }
 
+export interface EnergyInfoDto {
+  user_id: string;
+  produced: number;
+  consumed: number;
+  diff: number;
+  date: Date;
+}
+
+export interface EnergyTotalDto {
+  produced: number;
+  consumed: number;
+}
+
 export const createUserApi = (address: string, body: RegistrationUser) => {
   return axios.post(`user/create/${address}`, body);
+};
+
+export const getRetrieveEnergyData = (): Promise<{
+  data: { data: EnergyInfoDto[] };
+}> => {
+  return axios.get('user/energy/list');
+};
+
+export const getTotalEnergy = (): Promise<{ data: EnergyInfoDto }> => {
+  return axios.get('user/energy/all');
 };

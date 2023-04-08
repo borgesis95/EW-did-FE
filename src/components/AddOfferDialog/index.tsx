@@ -6,9 +6,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { FormControl, MenuItem } from '@mui/material';
-import { DatePicker } from '@mui/lab';
 import { useSelector } from 'react-redux';
 import { selectAssets } from '@/store/slices/assets.slice';
+import TimeSlot from '../TimeSlot/TimeSlot';
+import { useState } from 'react';
 
 interface AddDerDialogProps {
   open: boolean;
@@ -16,13 +17,27 @@ interface AddDerDialogProps {
   handleConfirm: (form: IOfferForm) => void;
 }
 
+export interface TimeSlotDto {
+  startTime: string;
+  endTime: string;
+  quantity: number;
+  price: number;
+}
 export interface IOfferForm {
   price: number;
   asset: string;
   quantity: string;
   startDate: string;
   endDate: string;
+  timeSlot: TimeSlotDto[];
 }
+
+const TIMESLOT_INITIAL: TimeSlotDto = {
+  price: 0,
+  quantity: 0,
+  startTime: '',
+  endTime: ''
+};
 
 function AddOfferDialog({
   open,
@@ -30,6 +45,9 @@ function AddOfferDialog({
   handleConfirm
 }: AddDerDialogProps) {
   const [form, setForm] = React.useState<IOfferForm>();
+  const [timeSlotArray, setTimeSlotArray] = useState<TimeSlotDto[]>([
+    TIMESLOT_INITIAL
+  ]);
 
   const assets = useSelector(selectAssets);
 
@@ -44,10 +62,26 @@ function AddOfferDialog({
     handleConfirm(form);
   };
 
+  const onAddNewTimeSlot = (slot: TimeSlotDto) => {
+    setTimeSlotArray([slot, ...timeSlotArray]);
+  };
+
+  const timeSlotRender = () => {
+    return timeSlotArray.map((_, index) => {
+      return (
+        <TimeSlot
+          fascia={`f${index}`}
+          key={index}
+          onAddNewTimeSlot={onAddNewTimeSlot}
+        />
+      );
+    });
+  };
+
   return (
     <Dialog open={open} onClose={handleToggle}>
       <DialogTitle>Add new offer</DialogTitle>
-      <DialogContent style={{ height: 300, width: 600 }}>
+      <DialogContent>
         <FormControl fullWidth>
           <TextField
             id="outlined-select-currency"
@@ -61,51 +95,12 @@ function AddOfferDialog({
               </MenuItem>
             ))}
           </TextField>
-          <TextField
-            style={{ marginTop: 20, marginBottom: 20 }}
-            id="outlined-number"
-            label="Price"
-            placeholder="Price"
-            type="number"
-            onChange={(e) => handleChange('price', e.target.value)}
-            InputLabelProps={{
-              shrink: true
-            }}
-          />
-
-          <TextField
-            style={{ marginTop: 20, marginBottom: 20 }}
-            id="outlined-number"
-            label="quantity"
-            placeholder="quantity"
-            type="number"
-            onChange={(e) => handleChange('quantity', e.target.value)}
-            InputLabelProps={{
-              shrink: true
-            }}
-          />
-
-          <div className="flex gap-2">
-            <DatePicker
-              value={form?.startDate}
-              label="Seleziona data inizio offerta"
-              className="mt-8"
-              renderInput={(params) => <TextField {...params} />}
-              onChange={(value) => handleChange('startDate', value)}
-            ></DatePicker>
-            <DatePicker
-              value={form?.endDate}
-              label="Seleziona data fine offerta"
-              className="mt-8"
-              renderInput={(params) => <TextField {...params} />}
-              onChange={(value) => handleChange('endDate', value)}
-            ></DatePicker>
-          </div>
+          {timeSlotRender()}
         </FormControl>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleToggle}>Cancella</Button>
-        <Button onClick={onConfirm}>Crea offerta</Button>
+        <Button onClick={handleToggle}>Delete</Button>
+        <Button onClick={onConfirm}>Create offer</Button>
       </DialogActions>
     </Dialog>
   );
