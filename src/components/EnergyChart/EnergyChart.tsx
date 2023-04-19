@@ -33,7 +33,7 @@ function EnergyChart() {
         width={1200}
         height={350}
         data={dataChart}
-        // margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+        margin={{ left: -40 }}
       >
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="date" />

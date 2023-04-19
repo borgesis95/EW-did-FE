@@ -106,7 +106,7 @@ function Demands({ blockchainParams }: DemandsProps) {
 
   const fetchMyDemands = async () => {
     const contract = blockchainParams.contract;
-    const res = await contract.methods.getEnergyRequest().call();
+    const res = await contract.methods.getBidsByAddress().call();
 
     const DemandsMapped: IRequestForm[] = res.map((item) => {
       const res = item;

@@ -14,7 +14,6 @@ export function middleware(request: NextRequest) {
   if (user) {
     const decode = jose.decodeJwt(user.jwt) as JwtToken;
 
-    console.log('scaduto?', decode.exp < (new Date().getTime() + 1) / 1000);
     if (
       protectedRoutes.includes(request.nextUrl.pathname) &&
       decode.exp < (new Date().getTime() + 1) / 1000

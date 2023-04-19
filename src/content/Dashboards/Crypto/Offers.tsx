@@ -9,13 +9,15 @@ import {
   alpha,
   Tooltip,
   CardActionArea,
-  styled
+  styled,
+  Chip
 } from '@mui/material';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import { useEffect, useState } from 'react';
 import AddOfferDialog, { IOfferForm } from '@/components/AddOfferDialog';
-import { Offers } from '@/models/offers';
+import { OfferDto, Offers } from '@/models/offers';
 import { format } from 'date-fns';
+import CreateOffer from '@/components/CreateOfferDialog/CreateOffer';
 
 export const AvatarWrapper = styled(Avatar)(
   ({ theme }) => `
@@ -86,9 +88,12 @@ function Offers({ blockchainParams }: OffersProps) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
   const [offersList, setOffersList] = useState<Offers[]>();
 
+  const [offersDto, setOffersDto] = useState<OfferDto[]>();
+
   useEffect(() => {
     if (blockchainParams) {
       fetchMyOffers();
+      fetchOffersBdyId();
     }
   }, [blockchainParams]);
 
@@ -96,23 +101,37 @@ function Offers({ blockchainParams }: OffersProps) {
     setIsDialogOpen(!isDialogOpen);
   };
 
-  const handleConfirm = async (form: IOfferForm) => {
+  // const handleConfirm = async (form: IOfferForm) => {
+  //   const contract = blockchainParams.contract;
+
+  //   const asset = form.asset.split(':')[3];
+  //   const startDate = new Date(form.startDate).getTime();
+  //   const endDate = new Date(form.endDate).getTime();
+
+  //   await contract.methods
+  //     .createEnergyOffer(asset, form.price, startDate, endDate, form.quantity)
+  //     .send({ from: blockchainParams.accounts[0] });
+
+  //   handleDialogToggle();
+  // };
+
+  const handleConfirmCreationOffer = async (form: IOfferForm) => {
+    console.log('new', form);
     const contract = blockchainParams.contract;
 
-    const asset = form.asset.split(':')[3];
-    const startDate = new Date(form.startDate).getTime();
-    const endDate = new Date(form.endDate).getTime();
-
     await contract.methods
-      .createEnergyOffer(asset, form.price, startDate, endDate, form.quantity)
+      .createOffer(blockchainParams.accounts[0], form.price, Date.now())
       .send({ from: blockchainParams.accounts[0] });
 
     handleDialogToggle();
+    fetchMyOffers();
   };
 
   const fetchMyOffers = async () => {
     const contract = blockchainParams.contract;
     const res = await contract.methods.getOffers().call();
+
+    console.log('res', res);
 
     const offersMapped: Offers[] = res.map((item) => {
       const res = item;
@@ -127,14 +146,40 @@ function Offers({ blockchainParams }: OffersProps) {
     setOffersList(offersMapped);
   };
 
-  const renderOffer = () => {
-    return offersList?.map((offer, index) => {
-      const startDate = format(
-        new Date(parseInt(offer.startDate)),
-        'dd/MM/yyyy'
-      );
-      const endDate = format(new Date(parseInt(offer.endDate)), 'dd/MM/yyyy');
+  const fetchOffersBdyId = async () => {
+    const contract = blockchainParams.contract;
+    const res = await contract.methods
+      .getOffersByAddress(blockchainParams.accounts[0])
+      .call();
 
+    let result = res
+      .map((item) => {
+        const date = parseInt(item[2]);
+        const offer: OfferDto = {
+          address: item[0],
+          price: item[1],
+          date: format(new Date(date), 'dd/MM/yyyy HH:mm'),
+          active: false
+        };
+
+        return offer;
+      })
+      .sort((a, b) => {
+        if (a.date > b.date) {
+          return -1;
+        } else return 1;
+      });
+
+    /*Offers have been ordered by time and only the recent one will be considered by aggregator */
+    result[0].active = true;
+
+    setOffersDto(result);
+
+    return offersDto;
+  };
+
+  const renderOffer = () => {
+    return offersDto?.map((offer, index) => {
       return (
         <Grid key={index} xs={12} sm={6} md={3} item>
           <Card
@@ -144,25 +189,29 @@ function Offers({ blockchainParams }: OffersProps) {
             }}
           >
             <CardContent>
-              <AvatarWrapper>
-                <img alt="BTC" src="/static/images/ew-logo.png" />
-              </AvatarWrapper>
-              <Typography variant="h5" noWrap>
-                {offer.asset}
-              </Typography>
-              <Typography variant="subtitle1" noWrap>
-                BTC
-              </Typography>
+              <div className="flex justify-between">
+                <AvatarWrapper>
+                  <img alt="BTC" src="/static/images/solar-energy.png" />
+                </AvatarWrapper>
+                {offer.active && (
+                  <Chip
+                    className="self-center"
+                    label="Active"
+                    color="success"
+                  />
+                )}
+              </div>
+
               <Box
                 sx={{
                   pt: 3
                 }}
               >
                 <Typography variant="h3" gutterBottom noWrap>
-                  {offer.price}
+                  {offer.price}€/KW
                 </Typography>
                 <Typography variant="subtitle2" noWrap>
-                  {startDate} - {endDate}
+                  {offer.date}
                 </Typography>
               </Box>
             </CardContent>
@@ -204,9 +253,14 @@ function Offers({ blockchainParams }: OffersProps) {
           </Tooltip>
         </Grid>
       </Grid>
-      <AddOfferDialog
+      {/* <AddOfferDialog
         handleToggle={handleDialogToggle}
         handleConfirm={handleConfirm}
+        open={isDialogOpen}
+      /> */}
+      <CreateOffer
+        handleToggle={handleDialogToggle}
+        handleConfirm={handleConfirmCreationOffer}
         open={isDialogOpen}
       />
     </>

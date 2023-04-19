@@ -16,8 +16,8 @@ export interface EnergyInfoDto {
 }
 
 export interface EnergyTotalDto {
-  produced: number;
-  consumed: number;
+  key: string;
+  value: number;
 }
 
 export const createUserApi = (address: string, body: RegistrationUser) => {
@@ -30,6 +30,8 @@ export const getRetrieveEnergyData = (): Promise<{
   return axios.get('user/energy/list');
 };
 
-export const getTotalEnergy = (): Promise<{ data: EnergyInfoDto }> => {
+export const getTotalEnergy = (): Promise<{
+  data: { data: EnergyTotalDto[] };
+}> => {
   return axios.get('user/energy/all');
 };

@@ -1,6 +1,19 @@
-export const EW_CONTRACT_ADDRESS = '0x174Da064deb25269D705270b157466588cD60208';
+export const EW_CONTRACT_ADDRESS = '0x9c38b99f150C5DDf7B5081f29a1456E464628096';
 export const EW_CONTRACT_ABI = {
   abi: [
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'string',
+          name: 'message',
+          type: 'string'
+        }
+      ],
+      name: 'BidCreated',
+      type: 'event'
+    },
     {
       anonymous: false,
       inputs: [
@@ -15,59 +28,6 @@ export const EW_CONTRACT_ABI = {
       type: 'event'
     },
     {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: false,
-          internalType: 'string',
-          name: 'message',
-          type: 'string'
-        }
-      ],
-      name: 'RequestCreated',
-      type: 'event'
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: '',
-          type: 'address'
-        }
-      ],
-      name: 'eWOffersList',
-      outputs: [
-        {
-          internalType: 'address',
-          name: 'asset',
-          type: 'address'
-        },
-        {
-          internalType: 'uint256',
-          name: 'price',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'startDate',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'endDate',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'quantityEnergy',
-          type: 'uint256'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function',
-      constant: true
-    },
-    {
       inputs: [
         {
           internalType: 'uint256',
@@ -75,149 +35,290 @@ export const EW_CONTRACT_ABI = {
           type: 'uint256'
         }
       ],
-      name: 'listOffers',
+      name: 'bids',
       outputs: [
         {
           internalType: 'address',
-          name: 'asset',
+          name: 'user',
           type: 'address'
         },
         {
           internalType: 'uint256',
-          name: 'price',
+          name: 'maxPrice',
           type: 'uint256'
         },
         {
           internalType: 'uint256',
-          name: 'startDate',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'endDate',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'quantityEnergy',
+          name: 'creationDate',
           type: 'uint256'
         }
       ],
       stateMutability: 'view',
       type: 'function',
       constant: true
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256'
-        }
-      ],
-      name: 'listRequest',
-      outputs: [
-        {
-          internalType: 'address',
-          name: 'sender',
-          type: 'address'
-        },
-        {
-          internalType: 'uint256',
-          name: 'price',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'quantityEnergy',
-          type: 'uint256'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function',
-      constant: true
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'asset',
-          type: 'address'
-        },
-        {
-          internalType: 'uint256',
-          name: 'price',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'startDate',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'endDate',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'quantityEnergy',
-          type: 'uint256'
-        }
-      ],
-      name: 'createEnergyOffer',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function'
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'price',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'quantityEnergy',
-          type: 'uint256'
-        }
-      ],
-      name: 'createEnergyDemands',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function'
     },
     {
       inputs: [],
-      name: 'getEnergyRequest',
+      name: 'matchTest',
       outputs: [
         {
-          components: [
-            {
-              internalType: 'address',
-              name: 'sender',
-              type: 'address'
-            },
-            {
-              internalType: 'uint256',
-              name: 'price',
-              type: 'uint256'
-            },
-            {
-              internalType: 'uint256',
-              name: 'quantityEnergy',
-              type: 'uint256'
-            }
-          ],
-          internalType: 'struct MicroGridContract.EnergyRequest[]',
-          name: 'list',
-          type: 'tuple[]'
+          internalType: 'address',
+          name: 'from',
+          type: 'address'
+        },
+        {
+          internalType: 'address',
+          name: 'to',
+          type: 'address'
+        },
+        {
+          internalType: 'uint256',
+          name: 'price',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'quantity',
+          type: 'uint256'
         }
       ],
       stateMutability: 'view',
       type: 'function',
       constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      name: 'matching',
+      outputs: [
+        {
+          internalType: 'address',
+          name: 'from',
+          type: 'address'
+        },
+        {
+          internalType: 'address',
+          name: 'to',
+          type: 'address'
+        },
+        {
+          internalType: 'uint256',
+          name: 'price',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'quantity',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function',
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      name: 'misuration',
+      outputs: [
+        {
+          internalType: 'address',
+          name: 'user',
+          type: 'address'
+        },
+        {
+          internalType: 'uint128',
+          name: 'generated',
+          type: 'uint128'
+        },
+        {
+          internalType: 'uint128',
+          name: 'consumed',
+          type: 'uint128'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function',
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      name: 'offers',
+      outputs: [
+        {
+          internalType: 'address',
+          name: 'user',
+          type: 'address'
+        },
+        {
+          internalType: 'uint256',
+          name: 'minPrice',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'creationDate',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function',
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address'
+        },
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      name: 'userBids',
+      outputs: [
+        {
+          internalType: 'address',
+          name: 'user',
+          type: 'address'
+        },
+        {
+          internalType: 'uint256',
+          name: 'maxPrice',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'creationDate',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function',
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address'
+        },
+        {
+          internalType: 'uint256',
+          name: '',
+          type: 'uint256'
+        }
+      ],
+      name: 'userOffers',
+      outputs: [
+        {
+          internalType: 'address',
+          name: 'user',
+          type: 'address'
+        },
+        {
+          internalType: 'uint256',
+          name: 'minPrice',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: 'creationDate',
+          type: 'uint256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function',
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '_address',
+          type: 'address'
+        },
+        {
+          internalType: 'uint256',
+          name: '_maxPrice',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: '_creationDate',
+          type: 'uint256'
+        }
+      ],
+      name: 'createOffer',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '_address',
+          type: 'address'
+        },
+        {
+          internalType: 'uint256',
+          name: '_minPrice',
+          type: 'uint256'
+        },
+        {
+          internalType: 'uint256',
+          name: '_creationDate',
+          type: 'uint256'
+        }
+      ],
+      name: 'createBid',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '_address',
+          type: 'address'
+        },
+        {
+          internalType: 'uint128',
+          name: '_produced',
+          type: 'uint128'
+        },
+        {
+          internalType: 'uint128',
+          name: '_consumed',
+          type: 'uint128'
+        }
+      ],
+      name: 'addMisuration',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function'
     },
     {
       inputs: [],
@@ -227,7 +328,146 @@ export const EW_CONTRACT_ABI = {
           components: [
             {
               internalType: 'address',
-              name: 'asset',
+              name: 'user',
+              type: 'address'
+            },
+            {
+              internalType: 'uint256',
+              name: 'minPrice',
+              type: 'uint256'
+            },
+            {
+              internalType: 'uint256',
+              name: 'creationDate',
+              type: 'uint256'
+            }
+          ],
+          internalType: 'struct MarketMicroGridContract.Offer[]',
+          name: '',
+          type: 'tuple[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function',
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '_address',
+          type: 'address'
+        }
+      ],
+      name: 'getOffersByAddress',
+      outputs: [
+        {
+          components: [
+            {
+              internalType: 'address',
+              name: 'user',
+              type: 'address'
+            },
+            {
+              internalType: 'uint256',
+              name: 'minPrice',
+              type: 'uint256'
+            },
+            {
+              internalType: 'uint256',
+              name: 'creationDate',
+              type: 'uint256'
+            }
+          ],
+          internalType: 'struct MarketMicroGridContract.Offer[]',
+          name: '',
+          type: 'tuple[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function',
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '_address',
+          type: 'address'
+        }
+      ],
+      name: 'getBidsByAddress',
+      outputs: [
+        {
+          components: [
+            {
+              internalType: 'address',
+              name: 'user',
+              type: 'address'
+            },
+            {
+              internalType: 'uint256',
+              name: 'maxPrice',
+              type: 'uint256'
+            },
+            {
+              internalType: 'uint256',
+              name: 'creationDate',
+              type: 'uint256'
+            }
+          ],
+          internalType: 'struct MarketMicroGridContract.Bid[]',
+          name: '',
+          type: 'tuple[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function',
+      constant: true
+    },
+    {
+      inputs: [],
+      name: 'getBids',
+      outputs: [
+        {
+          components: [
+            {
+              internalType: 'address',
+              name: 'user',
+              type: 'address'
+            },
+            {
+              internalType: 'uint256',
+              name: 'maxPrice',
+              type: 'uint256'
+            },
+            {
+              internalType: 'uint256',
+              name: 'creationDate',
+              type: 'uint256'
+            }
+          ],
+          internalType: 'struct MarketMicroGridContract.Bid[]',
+          name: '',
+          type: 'tuple[]'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function',
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          components: [
+            {
+              internalType: 'address',
+              name: 'from',
+              type: 'address'
+            },
+            {
+              internalType: 'address',
+              name: 'to',
               type: 'address'
             },
             {
@@ -237,21 +477,48 @@ export const EW_CONTRACT_ABI = {
             },
             {
               internalType: 'uint256',
-              name: 'startDate',
-              type: 'uint256'
-            },
-            {
-              internalType: 'uint256',
-              name: 'endDate',
-              type: 'uint256'
-            },
-            {
-              internalType: 'uint256',
-              name: 'quantityEnergy',
+              name: 'quantity',
               type: 'uint256'
             }
           ],
-          internalType: 'struct MicroGridContract.EnergyOffer[]',
+          internalType: 'struct MarketMicroGridContract.Matching[]',
+          name: '_matchingList',
+          type: 'tuple[]'
+        }
+      ],
+      name: 'createMatch',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'getMatch',
+      outputs: [
+        {
+          components: [
+            {
+              internalType: 'address',
+              name: 'from',
+              type: 'address'
+            },
+            {
+              internalType: 'address',
+              name: 'to',
+              type: 'address'
+            },
+            {
+              internalType: 'uint256',
+              name: 'price',
+              type: 'uint256'
+            },
+            {
+              internalType: 'uint256',
+              name: 'quantity',
+              type: 'uint256'
+            }
+          ],
+          internalType: 'struct MarketMicroGridContract.Matching[]',
           name: '',
           type: 'tuple[]'
         }

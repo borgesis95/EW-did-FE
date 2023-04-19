@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-
+import Cookie from 'js-cookie';
 import {
   Box,
   alpha,
@@ -15,10 +15,12 @@ import {
 import MenuTwoToneIcon from '@mui/icons-material/MenuTwoTone';
 import { SidebarContext } from 'src/contexts/SidebarContext';
 import CloseTwoToneIcon from '@mui/icons-material/CloseTwoTone';
+import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
 
 import HeaderButtons from './Buttons';
 import HeaderUserbox from './Userbox';
 import HeaderMenu from './Menu';
+import { useRouter } from 'next/router';
 
 const HeaderWrapper = styled(Box)(
   ({ theme }) => `
@@ -39,6 +41,12 @@ const HeaderWrapper = styled(Box)(
 function Header() {
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const theme = useTheme();
+  const router = useRouter();
+
+  const onLogout = () => {
+    Cookie.remove('user');
+    router.push('/login');
+  };
 
   return (
     <HeaderWrapper
@@ -69,9 +77,11 @@ function Header() {
         <HeaderMenu />
       </Stack>
       <Box display="flex" alignItems="center">
-        <HeaderButtons />
         <HeaderUserbox />
-        <Button onClick={toggleSidebar}> icoa</Button>
+        <Button color="primary" fullWidth onClick={onLogout}>
+          <LockOpenTwoToneIcon sx={{ mr: 1 }} />
+          Sign out
+        </Button>
         <Box
           component="span"
           sx={{
