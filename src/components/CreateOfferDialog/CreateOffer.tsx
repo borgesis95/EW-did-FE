@@ -42,7 +42,7 @@ function CreateOffer({ open, handleToggle, handleConfirm }: CreateOfferProps) {
         <FormControl fullWidth>
           <TextField
             id="outlined-select-currency"
-            label="value"
+            label="Minimum price"
             type="number"
             onChange={(e) => handleChange('price', e.target.value)}
           ></TextField>

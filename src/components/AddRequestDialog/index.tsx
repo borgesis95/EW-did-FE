@@ -14,8 +14,9 @@ interface AddRequestdialog {
 }
 
 export interface IRequestForm {
-  quantityEnergy: number;
   price: number;
+  date: string;
+  active: boolean;
 }
 
 function AddRequestDialog({
@@ -39,19 +40,8 @@ function AddRequestDialog({
   return (
     <Dialog open={open} onClose={handleToggle}>
       <DialogTitle>Add new request</DialogTitle>
-      <DialogContent style={{ height: 300, width: 600 }}>
+      <DialogContent style={{ width: 600 }}>
         <FormControl fullWidth>
-          <TextField
-            style={{ marginTop: 20, marginBottom: 20 }}
-            id="outlined-number"
-            label="KW necessary"
-            placeholder="KW necessary"
-            type="number"
-            onChange={(e) => handleChange('kw', e.target.value)}
-            InputLabelProps={{
-              shrink: true
-            }}
-          />
           <TextField
             style={{ marginTop: 20, marginBottom: 20 }}
             id="outlined-number"

@@ -9,7 +9,8 @@ import {
   alpha,
   Tooltip,
   CardActionArea,
-  styled
+  styled,
+  Chip
 } from '@mui/material';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import { useEffect, useState } from 'react';
@@ -99,24 +100,38 @@ function Demands({ blockchainParams }: DemandsProps) {
     const contract = blockchainParams.contract;
 
     await contract.methods
-      .createEnergyDemands(form.price, form.quantityEnergy)
+      .createBid(blockchainParams.accounts[0], form.price, Date.now())
       .send({ from: blockchainParams.accounts[0] });
     handleDialogToggle();
   };
 
   const fetchMyDemands = async () => {
     const contract = blockchainParams.contract;
-    const res = await contract.methods.getBidsByAddress().call();
+    const res = await contract.methods
+      .getBidsByAddress(blockchainParams.accounts[0])
+      .call();
 
-    const DemandsMapped: IRequestForm[] = res.map((item) => {
-      const res = item;
-      return {
-        price: res.price,
-        quantityEnergy: res.quantityEnergy
-      };
-    });
+    console.log('RES demands:', res);
 
-    setDemandsList(DemandsMapped);
+    const demands: IRequestForm[] = res
+      .map((item) => {
+        const res = item;
+
+        console.log('res', res);
+        return {
+          price: res.maxPrice,
+          quantityEnergy: res.quantityEnergy,
+          date: format(new Date(parseInt(res.creationDate)), 'dd/MM/yyyy HH:mm')
+        };
+      })
+      .sort((a, b) => {
+        if (a.date > b.date) {
+          return -1;
+        } else return 1;
+      });
+
+    demands[0].active = true;
+    setDemandsList(demands);
   };
 
   const renderDemands = () => {
@@ -130,19 +145,28 @@ function Demands({ blockchainParams }: DemandsProps) {
             }}
           >
             <CardContent>
-              <AvatarWrapper>
-                <img alt="BTC" src="/static/images/ew-logo.png" />
-              </AvatarWrapper>
+              <div className="flex justify-between">
+                <AvatarWrapper>
+                  <img alt="BTC" src="/static/images/tower.png" />
+                </AvatarWrapper>
+                {request.active && (
+                  <Chip
+                    className="self-center"
+                    label="Active"
+                    color="success"
+                  />
+                )}
+              </div>
               <Box
                 sx={{
                   pt: 3
                 }}
               >
                 <Typography variant="h3" gutterBottom noWrap>
-                  {request.quantityEnergy} KW
+                  {request.price}€/KW
                 </Typography>
                 <Typography variant="subtitle2" noWrap>
-                  {request.price} €
+                  {request.date}
                 </Typography>
               </Box>
             </CardContent>
