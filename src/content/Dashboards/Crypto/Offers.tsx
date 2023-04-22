@@ -14,8 +14,8 @@ import {
 } from '@mui/material';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import { useEffect, useState } from 'react';
-import AddOfferDialog, { IOfferForm } from '@/components/AddOfferDialog';
-import { OfferDto, Offers } from '@/models/offers';
+import { IOfferForm } from '@/components/AddOfferDialog';
+import { OfferDto } from '@/models/offers';
 import { format } from 'date-fns';
 import CreateOffer from '@/components/CreateOfferDialog/CreateOffer';
 
@@ -86,14 +86,13 @@ interface OffersProps {
 
 function Offers({ blockchainParams }: OffersProps) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
-  const [offersList, setOffersList] = useState<Offers[]>();
 
   const [offersDto, setOffersDto] = useState<OfferDto[]>();
 
   useEffect(() => {
     if (blockchainParams) {
-      fetchMyOffers();
       fetchOffersBdyId();
+      subscribe();
     }
   }, [blockchainParams]);
 
@@ -101,22 +100,18 @@ function Offers({ blockchainParams }: OffersProps) {
     setIsDialogOpen(!isDialogOpen);
   };
 
-  // const handleConfirm = async (form: IOfferForm) => {
-  //   const contract = blockchainParams.contract;
-
-  //   const asset = form.asset.split(':')[3];
-  //   const startDate = new Date(form.startDate).getTime();
-  //   const endDate = new Date(form.endDate).getTime();
-
-  //   await contract.methods
-  //     .createEnergyOffer(asset, form.price, startDate, endDate, form.quantity)
-  //     .send({ from: blockchainParams.accounts[0] });
-
-  //   handleDialogToggle();
-  // };
+  const subscribe = () => {
+    const contract = blockchainParams.contract;
+    contract.events
+      .OfferCreated({})
+      .on('data', async function (event) {
+        console.log(event.returnValues);
+        fetchOffersBdyId();
+      })
+      .on('error', console.error);
+  };
 
   const handleConfirmCreationOffer = async (form: IOfferForm) => {
-    console.log('new', form);
     const contract = blockchainParams.contract;
 
     await contract.methods
@@ -124,26 +119,6 @@ function Offers({ blockchainParams }: OffersProps) {
       .send({ from: blockchainParams.accounts[0] });
 
     handleDialogToggle();
-    fetchMyOffers();
-  };
-
-  const fetchMyOffers = async () => {
-    const contract = blockchainParams.contract;
-    const res = await contract.methods.getOffers().call();
-
-    console.log('res', res);
-
-    const offersMapped: Offers[] = res.map((item) => {
-      const res = item;
-      return {
-        asset: res.asset,
-        price: res.price,
-        startDate: res.startDate,
-        endDate: res.endDate
-      };
-    });
-
-    setOffersList(offersMapped);
   };
 
   const fetchOffersBdyId = async () => {
@@ -172,6 +147,8 @@ function Offers({ blockchainParams }: OffersProps) {
 
     /*Offers have been ordered by time and only the recent one will be considered by aggregator */
     result[0].active = true;
+
+    console.log('result:', result);
 
     setOffersDto(result);
 
@@ -253,11 +230,6 @@ function Offers({ blockchainParams }: OffersProps) {
           </Tooltip>
         </Grid>
       </Grid>
-      {/* <AddOfferDialog
-        handleToggle={handleDialogToggle}
-        handleConfirm={handleConfirm}
-        open={isDialogOpen}
-      /> */}
       <CreateOffer
         handleToggle={handleDialogToggle}
         handleConfirm={handleConfirmCreationOffer}
