@@ -89,11 +89,23 @@ function Demands({ blockchainParams }: DemandsProps) {
   useEffect(() => {
     if (blockchainParams) {
       fetchMyDemands();
+      subscribe();
     }
   }, [blockchainParams]);
 
   const handleDialogToggle = () => {
     setIsDialogOpen(!isDialogOpen);
+  };
+
+  const subscribe = () => {
+    const contract = blockchainParams.contract;
+    contract.events
+      .OfferCreated({})
+      .on('data', async function (event) {
+        console.log(event.returnValues);
+        fetchMyDemands();
+      })
+      .on('error', console.error);
   };
 
   const handleConfirm = async (form: IRequestForm) => {
@@ -111,13 +123,10 @@ function Demands({ blockchainParams }: DemandsProps) {
       .getBidsByAddress(blockchainParams.accounts[0])
       .call();
 
-    console.log('RES demands:', res);
-
     const demands: IRequestForm[] = res
       .map((item) => {
         const res = item;
 
-        console.log('res', res);
         return {
           price: res.maxPrice,
           quantityEnergy: res.quantityEnergy,

@@ -147,9 +147,6 @@ function Offers({ blockchainParams }: OffersProps) {
 
     /*Offers have been ordered by time and only the recent one will be considered by aggregator */
     result[0].active = true;
-
-    console.log('result:', result);
-
     setOffersDto(result);
 
     return offersDto;
