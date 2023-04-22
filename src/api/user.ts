@@ -5,6 +5,7 @@ import axios from '@/config/axios_instance';
 export interface RegistrationUser {
   nickname: string;
   email: string;
+  address: string;
 }
 
 export interface EnergyInfoDto {
@@ -20,8 +21,8 @@ export interface EnergyTotalDto {
   value: number;
 }
 
-export const createUserApi = (address: string, body: RegistrationUser) => {
-  return axios.post(`user/create/${address}`, body);
+export const createUserApi = (body: RegistrationUser) => {
+  return axios.post(`user/create`, body);
 };
 
 export const getRetrieveEnergyData = (): Promise<{

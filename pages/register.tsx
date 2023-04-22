@@ -1,18 +1,19 @@
 import Head from 'next/head';
-import { Button, FormControl, styled, TextField } from '@mui/material';
+import { Button, FormControl, TextField } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { createUserApi, RegistrationUser } from '@/api/user';
 import { initWeb3 } from './login';
 import Web3 from 'web3';
-import { redirect } from 'next/dist/server/api-utils';
 import { useRouter } from 'next/router';
-
+import { useContext } from 'react';
+import { BlockchainContext } from '@/contexts/BlockchainContext';
 let web3: Web3 | undefined = undefined; // Will hold the web3 instance
 
 function Register() {
   const [body, setBody] = useState<RegistrationUser>();
   const router = useRouter();
+  const blockchainParams = useContext(BlockchainContext);
 
   useEffect(() => {}, []);
 
@@ -28,9 +29,13 @@ function Register() {
       web3 = await initWeb3();
     }
 
-    const publicAddress = await web3.eth.getCoinbase();
+    const request: RegistrationUser = {
+      ...body,
+      address: blockchainParams.accounts[0]
+    };
 
-    createUserApi(publicAddress, body).then((response) => {
+    console.log('blockchainParams');
+    createUserApi(request).then((response) => {
       router.push('/login');
     });
   };

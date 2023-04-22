@@ -4,16 +4,9 @@ import SidebarLayout from '@/layouts/SidebarLayout';
 import { Container, Grid } from '@mui/material';
 import Offers from '@/content/Dashboards/Crypto/Offers';
 import { useEffect, useState } from 'react';
-import {
-  Asset,
-  AssetsService,
-  initWithMetamask,
-  SignerService
-} from 'iam-client-lib';
-import DIDTable from '@/components/DIDTable';
+import { Asset, AssetsService, initWithMetamask } from 'iam-client-lib';
 import { BlockchainContext } from '@/contexts/BlockchainContext';
 import Demands from '@/content/Dashboards/Crypto/Demands';
-import Assets from '@/content/Dashboards/Crypto/Assets';
 import EnergyChart from '@/components/EnergyChart/EnergyChart';
 import BarEnergyChart from '@/components/BarChart/BarChart';
 

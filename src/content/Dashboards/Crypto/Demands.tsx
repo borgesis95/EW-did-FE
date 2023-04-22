@@ -110,37 +110,42 @@ function Demands({ blockchainParams }: DemandsProps) {
 
   const handleConfirm = async (form: IRequestForm) => {
     const contract = blockchainParams.contract;
-
+    const account = blockchainParams.accounts[0].toLowerCase();
     await contract.methods
-      .createBid(blockchainParams.accounts[0], form.price, Date.now())
-      .send({ from: blockchainParams.accounts[0] });
+      .createBid(account, form.price, Date.now())
+      .send({ from: account });
     handleDialogToggle();
   };
 
   const fetchMyDemands = async () => {
     const contract = blockchainParams.contract;
-    const res = await contract.methods
-      .getBidsByAddress(blockchainParams.accounts[0])
-      .call();
+    const account = blockchainParams.accounts[0].toLowerCase();
 
-    const demands: IRequestForm[] = res
-      .map((item) => {
-        const res = item;
+    const res = await contract.methods.getBidsByAddress(account).call();
 
-        return {
-          price: res.maxPrice,
-          quantityEnergy: res.quantityEnergy,
-          date: format(new Date(parseInt(res.creationDate)), 'dd/MM/yyyy HH:mm')
-        };
-      })
-      .sort((a, b) => {
-        if (a.date > b.date) {
-          return -1;
-        } else return 1;
-      });
+    if (res.length > 0) {
+      const demands: IRequestForm[] = res
+        .map((item) => {
+          const res = item;
 
-    demands[0].active = true;
-    setDemandsList(demands);
+          return {
+            price: res.maxPrice,
+            quantityEnergy: res.quantityEnergy,
+            date: format(
+              new Date(parseInt(res.creationDate)),
+              'dd/MM/yyyy HH:mm'
+            )
+          };
+        })
+        .sort((a, b) => {
+          if (a.date > b.date) {
+            return -1;
+          } else return 1;
+        });
+
+      demands[0].active = true;
+      setDemandsList(demands);
+    }
   };
 
   const renderDemands = () => {

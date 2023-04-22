@@ -113,43 +113,46 @@ function Offers({ blockchainParams }: OffersProps) {
 
   const handleConfirmCreationOffer = async (form: IOfferForm) => {
     const contract = blockchainParams.contract;
+    const account = blockchainParams.accounts[0].toLowerCase();
 
     await contract.methods
-      .createOffer(blockchainParams.accounts[0], form.price, Date.now())
-      .send({ from: blockchainParams.accounts[0] });
+      .createOffer(account, form.price, Date.now())
+      .send({ from: account });
 
     handleDialogToggle();
   };
 
   const fetchOffersBdyId = async () => {
     const contract = blockchainParams.contract;
-    const res = await contract.methods
-      .getOffersByAddress(blockchainParams.accounts[0])
-      .call();
+    const account = blockchainParams.accounts[0].toLowerCase();
 
-    let result = res
-      .map((item) => {
-        const date = parseInt(item[2]);
-        const offer: OfferDto = {
-          address: item[0],
-          price: item[1],
-          date: format(new Date(date), 'dd/MM/yyyy HH:mm'),
-          active: false
-        };
+    const res = await contract.methods.getOffersByAddress(account).call();
 
-        return offer;
-      })
-      .sort((a, b) => {
-        if (a.date > b.date) {
-          return -1;
-        } else return 1;
-      });
+    if (res.length > 0) {
+      let result = res
+        .map((item) => {
+          const date = parseInt(item[2]);
+          const offer: OfferDto = {
+            address: item[0],
+            price: item[1],
+            date: format(new Date(date), 'dd/MM/yyyy HH:mm'),
+            active: false
+          };
 
-    /*Offers have been ordered by time and only the recent one will be considered by aggregator */
-    result[0].active = true;
-    setOffersDto(result);
+          return offer;
+        })
+        .sort((a, b) => {
+          if (a.date > b.date) {
+            return -1;
+          } else return 1;
+        });
 
-    return offersDto;
+      /*Offers have been ordered by time and only the recent one will be considered by aggregator */
+      result[0].active = true;
+      setOffersDto(result);
+
+      return offersDto;
+    }
   };
 
   const renderOffer = () => {

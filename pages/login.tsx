@@ -17,7 +17,8 @@ import Web3 from 'web3';
 import jwt from 'jsonwebtoken';
 import Cookies from 'js-cookie';
 import { JwtToken } from '@/models/jwt';
-
+import { BlockchainContext } from '@/contexts/BlockchainContext';
+import { useContext } from 'react';
 const MainContent = styled(Box)(
   () => `
       height: 100%;
@@ -64,6 +65,7 @@ function Login() {
   let signerService: SignerService;
 
   const router = useRouter();
+  const blockchainParams = useContext(BlockchainContext);
 
   const initSignerService = async function (providerType: ProviderType) {
     switch (providerType) {
@@ -84,8 +86,8 @@ function Login() {
       web3 = await initWeb3();
     }
 
-    const publicAddress = await web3.eth.getCoinbase();
-
+    console.log('blockchain', blockchainParams);
+    const publicAddress = blockchainParams.accounts[0].toLowerCase();
     axios.get<{ nonce: string }>(`user/${publicAddress}`).then((response) => {
       handleSignMessage(publicAddress, response.data.nonce);
     });
@@ -113,9 +115,12 @@ function Login() {
     axios.post(`user/auth`, body).then((response) => {
       const jwtToken = response.data.data;
 
+      console.log('RESPONSE', response);
+
       const jwt_decoded = jwt.decode(jwtToken) as JwtToken;
 
       if (jwt_decoded) {
+        console.log('jwt', jwt_decoded);
         const cookiesToSave = {
           user: jwt_decoded?.email,
           jwt: jwtToken

@@ -1,4 +1,4 @@
-export const EW_CONTRACT_ADDRESS = '0x9c38b99f150C5DDf7B5081f29a1456E464628096';
+export const EW_CONTRACT_ADDRESS = '0x36d6118d7943E4a66eB29D51558F8003b5DeEf2c';
 export const EW_CONTRACT_ABI = {
   abi: [
     {
@@ -270,6 +270,13 @@ export const EW_CONTRACT_ABI = {
         }
       ],
       name: 'createOffer',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [],
+      name: 'deleteAllOffers',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function'
