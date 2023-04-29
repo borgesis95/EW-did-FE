@@ -1,4 +1,4 @@
-export const EW_CONTRACT_ADDRESS = '0x36d6118d7943E4a66eB29D51558F8003b5DeEf2c';
+export const EW_CONTRACT_ADDRESS = '0xdA3e4092B6329D2A2a49338eFDA4A23ee158dC9d';
 export const EW_CONTRACT_ABI = {
   abi: [
     {
@@ -19,12 +19,50 @@ export const EW_CONTRACT_ABI = {
       inputs: [
         {
           indexed: false,
+          internalType: 'address',
+          name: 'sender',
+          type: 'address'
+        },
+        {
+          indexed: false,
+          internalType: 'string',
+          name: 'message',
+          type: 'string'
+        }
+      ],
+      name: 'MoneyReceived',
+      type: 'event'
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
           internalType: 'string',
           name: 'message',
           type: 'string'
         }
       ],
       name: 'OfferCreated',
+      type: 'event'
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: false,
+          internalType: 'address',
+          name: 'sender',
+          type: 'address'
+        },
+        {
+          indexed: false,
+          internalType: 'uint256',
+          name: 'value',
+          type: 'uint256'
+        }
+      ],
+      name: 'TransferReceived',
       type: 'event'
     },
     {
@@ -51,100 +89,6 @@ export const EW_CONTRACT_ABI = {
           internalType: 'uint256',
           name: 'creationDate',
           type: 'uint256'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function',
-      constant: true
-    },
-    {
-      inputs: [],
-      name: 'matchTest',
-      outputs: [
-        {
-          internalType: 'address',
-          name: 'from',
-          type: 'address'
-        },
-        {
-          internalType: 'address',
-          name: 'to',
-          type: 'address'
-        },
-        {
-          internalType: 'uint256',
-          name: 'price',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'quantity',
-          type: 'uint256'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function',
-      constant: true
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256'
-        }
-      ],
-      name: 'matching',
-      outputs: [
-        {
-          internalType: 'address',
-          name: 'from',
-          type: 'address'
-        },
-        {
-          internalType: 'address',
-          name: 'to',
-          type: 'address'
-        },
-        {
-          internalType: 'uint256',
-          name: 'price',
-          type: 'uint256'
-        },
-        {
-          internalType: 'uint256',
-          name: 'quantity',
-          type: 'uint256'
-        }
-      ],
-      stateMutability: 'view',
-      type: 'function',
-      constant: true
-    },
-    {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256'
-        }
-      ],
-      name: 'misuration',
-      outputs: [
-        {
-          internalType: 'address',
-          name: 'user',
-          type: 'address'
-        },
-        {
-          internalType: 'uint128',
-          name: 'generated',
-          type: 'uint128'
-        },
-        {
-          internalType: 'uint128',
-          name: 'consumed',
-          type: 'uint128'
         }
       ],
       stateMutability: 'view',
@@ -255,6 +199,26 @@ export const EW_CONTRACT_ABI = {
       inputs: [
         {
           internalType: 'address',
+          name: '',
+          type: 'address'
+        }
+      ],
+      name: 'userPayment',
+      outputs: [
+        {
+          internalType: 'int256',
+          name: '',
+          type: 'int256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function',
+      constant: true
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
           name: '_address',
           type: 'address'
         },
@@ -300,29 +264,6 @@ export const EW_CONTRACT_ABI = {
         }
       ],
       name: 'createBid',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function'
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: '_address',
-          type: 'address'
-        },
-        {
-          internalType: 'uint128',
-          name: '_produced',
-          type: 'uint128'
-        },
-        {
-          internalType: 'uint128',
-          name: '_consumed',
-          type: 'uint128'
-        }
-      ],
-      name: 'addMisuration',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function'
@@ -466,68 +407,75 @@ export const EW_CONTRACT_ABI = {
     {
       inputs: [
         {
-          components: [
-            {
-              internalType: 'address',
-              name: 'from',
-              type: 'address'
-            },
-            {
-              internalType: 'address',
-              name: 'to',
-              type: 'address'
-            },
-            {
-              internalType: 'uint256',
-              name: 'price',
-              type: 'uint256'
-            },
-            {
-              internalType: 'uint256',
-              name: 'quantity',
-              type: 'uint256'
-            }
-          ],
-          internalType: 'struct MarketMicroGridContract.Matching[]',
-          name: '_matchingList',
-          type: 'tuple[]'
+          internalType: 'address',
+          name: '_address',
+          type: 'address'
+        },
+        {
+          internalType: 'int256',
+          name: '_price',
+          type: 'int256'
         }
       ],
-      name: 'createMatch',
+      name: 'createPaymentTransaction',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '_address',
+          type: 'address'
+        }
+      ],
+      name: 'getPaymentTransaction',
+      outputs: [
+        {
+          internalType: 'int256',
+          name: '',
+          type: 'int256'
+        }
+      ],
+      stateMutability: 'view',
+      type: 'function',
+      constant: true
+    },
+    {
+      inputs: [],
+      name: 'pay',
+      outputs: [],
+      stateMutability: 'payable',
+      type: 'function',
+      payable: true
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address payable',
+          name: '_address',
+          type: 'address'
+        },
+        {
+          internalType: 'uint256',
+          name: '_price',
+          type: 'uint256'
+        }
+      ],
+      name: 'withDrawMoney',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function'
     },
     {
       inputs: [],
-      name: 'getMatch',
+      name: 'getContractBalance',
       outputs: [
         {
-          components: [
-            {
-              internalType: 'address',
-              name: 'from',
-              type: 'address'
-            },
-            {
-              internalType: 'address',
-              name: 'to',
-              type: 'address'
-            },
-            {
-              internalType: 'uint256',
-              name: 'price',
-              type: 'uint256'
-            },
-            {
-              internalType: 'uint256',
-              name: 'quantity',
-              type: 'uint256'
-            }
-          ],
-          internalType: 'struct MarketMicroGridContract.Matching[]',
+          internalType: 'uint256',
           name: '',
-          type: 'tuple[]'
+          type: 'uint256'
         }
       ],
       stateMutability: 'view',

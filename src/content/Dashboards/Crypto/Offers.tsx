@@ -18,6 +18,7 @@ import { IOfferForm } from '@/components/AddOfferDialog';
 import { OfferDto } from '@/models/offers';
 import { format } from 'date-fns';
 import CreateOffer from '@/components/CreateOfferDialog/CreateOffer';
+import { convertEuroToEth } from '@/utils/utils';
 
 export const AvatarWrapper = styled(Avatar)(
   ({ theme }) => `
@@ -122,6 +123,8 @@ function Offers({ blockchainParams }: OffersProps) {
     handleDialogToggle();
   };
 
+  /** */
+
   const fetchOffersBdyId = async () => {
     const contract = blockchainParams.contract;
     const account = blockchainParams.accounts[0].toLowerCase();
@@ -185,7 +188,7 @@ function Offers({ blockchainParams }: OffersProps) {
                 }}
               >
                 <Typography variant="h3" gutterBottom noWrap>
-                  {offer.price}€/KW
+                  {parseInt(offer.price) / 100} €/KW
                 </Typography>
                 <Typography variant="subtitle2" noWrap>
                   {offer.date}

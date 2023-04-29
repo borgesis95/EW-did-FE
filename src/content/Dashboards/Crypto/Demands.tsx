@@ -100,7 +100,7 @@ function Demands({ blockchainParams }: DemandsProps) {
   const subscribe = () => {
     const contract = blockchainParams.contract;
     contract.events
-      .OfferCreated({})
+      .BidCreated({})
       .on('data', async function (event) {
         console.log(event.returnValues);
         fetchMyDemands();
@@ -177,7 +177,7 @@ function Demands({ blockchainParams }: DemandsProps) {
                 }}
               >
                 <Typography variant="h3" gutterBottom noWrap>
-                  {request.price}€/KW
+                  {request.price / 100}€/KW
                 </Typography>
                 <Typography variant="subtitle2" noWrap>
                   {request.date}

@@ -9,6 +9,8 @@ import { BlockchainContext } from '@/contexts/BlockchainContext';
 import Demands from '@/content/Dashboards/Crypto/Demands';
 import EnergyChart from '@/components/EnergyChart/EnergyChart';
 import BarEnergyChart from '@/components/BarChart/BarChart';
+import AccountBalance from '@/content/Dashboards/Crypto/AccountBalance';
+import Transactions from '@/content/Dashboards/Transactions';
 
 interface DataAssets {
   loading: boolean;
@@ -92,7 +94,12 @@ function DashboardMicrogrid() {
             <Grid item lg={3}>
               <BarEnergyChart />
             </Grid>
-
+            <Grid item lg={5} xs={4}>
+              <AccountBalance blockchainParams={blockchainParams} />
+            </Grid>
+            <Grid item lg={7} xs={8}>
+              <Transactions />
+            </Grid>
             <Grid item lg={12} xs={12}>
               <Offers blockchainParams={blockchainParams} />
             </Grid>
