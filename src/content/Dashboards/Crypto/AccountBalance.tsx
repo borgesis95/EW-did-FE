@@ -4,20 +4,13 @@ import {
   Box,
   Grid,
   Typography,
-  useTheme,
   styled,
   Avatar,
-  Divider,
   alpha,
-  ListItem,
-  ListItemText,
-  List,
   ListItemAvatar
 } from '@mui/material';
 import TrendingUp from '@mui/icons-material/TrendingUp';
-import Text from 'src/components/Text';
-import { Chart } from 'src/components/Chart';
-import type { ApexOptions } from 'apexcharts';
+import { useEffect, useState } from 'react';
 
 const AvatarSuccess = styled(Avatar)(
   ({ theme }) => `
@@ -55,80 +48,126 @@ const ListItemAvatarWrapper = styled(ListItemAvatar)(
 `
 );
 
-function AccountBalance() {
-  const theme = useTheme();
+interface AccountBalanceProps {
+  blockchainParams: any;
+}
 
-  const chartOptions: ApexOptions = {
-    chart: {
-      background: 'transparent',
-      stacked: false,
-      toolbar: {
-        show: false
-      }
-    },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: '60%'
-        }
-      }
-    },
-    colors: ['#ff9900', '#1c81c2', '#333', '#5c6ac0'],
-    dataLabels: {
-      enabled: true,
-      formatter: function (val) {
-        return val + '%';
-      },
-      style: {
-        colors: [theme.colors.alpha.trueWhite[100]]
-      },
-      background: {
-        enabled: true,
-        foreColor: theme.colors.alpha.trueWhite[100],
-        padding: 8,
-        borderRadius: 4,
-        borderWidth: 0,
-        opacity: 0.3,
-        dropShadow: {
-          enabled: true,
-          top: 1,
-          left: 1,
-          blur: 1,
-          color: theme.colors.alpha.black[70],
-          opacity: 0.5
-        }
-      },
-      dropShadow: {
-        enabled: true,
-        top: 1,
-        left: 1,
-        blur: 1,
-        color: theme.colors.alpha.black[50],
-        opacity: 0.5
-      }
-    },
-    fill: {
-      opacity: 1
-    },
-    labels: ['Bitcoin', 'Ripple', 'Cardano', 'Ethereum'],
-    legend: {
-      labels: {
-        colors: theme.colors.alpha.trueWhite[100]
-      },
-      show: false
-    },
-    stroke: {
-      width: 0
-    },
-    theme: {
-      mode: theme.palette.mode
+function AccountBalance({ blockchainParams }: AccountBalanceProps) {
+  // const theme = useTheme();
+  const [balance, setBalance] = useState<string>();
+  const [remainToPay, setRemainToPay] = useState<number>();
+
+  useEffect(() => {
+    if (blockchainParams) {
+      getBalance();
+      getMoneyToPay();
     }
+  }, [blockchainParams]);
+
+  const getBalance = async () => {
+    const account = blockchainParams.accounts[0].toLowerCase();
+    const value = await blockchainParams.web3.eth.getBalance(account);
+    const converted = parseInt(
+      blockchainParams.web3.utils.fromWei(value, 'ether')
+    ).toFixed(2);
+    setBalance(converted);
   };
 
-  const chartSeries = [10, 20, 25, 45];
+  const sendMoney = async () => {
+    console.log('eth', blockchainParams.web3.utils);
+
+    const value = blockchainParams.web3.utils.toWei('1', 'ether');
+
+    console.log('value', value);
+    const contract = blockchainParams.contract;
+    const account = blockchainParams.accounts[0].toLowerCase();
+
+    await contract.methods.pay().send({ from: account, value: value });
+  };
+
+  const getMoneyToPay = async () => {
+    const account = blockchainParams.accounts[0].toLowerCase();
+
+    console.log('blockchainParams', blockchainParams.contract);
+    const value = await blockchainParams.contract.methods
+      .getPaymentTransaction(account)
+      .call();
+
+    console.log('value', value);
+    setRemainToPay(value);
+  };
+
+  // const chartOptions: ApexOptions = {
+  //   chart: {
+  //     background: 'transparent',
+  //     stacked: false,
+  //     toolbar: {
+  //       show: false
+  //     }
+  //   },
+  //   plotOptions: {
+  //     pie: {
+  //       donut: {
+  //         size: '60%'
+  //       }
+  //     }
+  //   },
+  //   colors: ['#ff9900', '#1c81c2', '#333', '#5c6ac0'],
+  //   dataLabels: {
+  //     enabled: true,
+  //     formatter: function (val) {
+  //       return val + '%';
+  //     },
+  //     style: {
+  //       colors: [theme.colors.alpha.trueWhite[100]]
+  //     },
+  //     background: {
+  //       enabled: true,
+  //       foreColor: theme.colors.alpha.trueWhite[100],
+  //       padding: 8,
+  //       borderRadius: 4,
+  //       borderWidth: 0,
+  //       opacity: 0.3,
+  //       dropShadow: {
+  //         enabled: true,
+  //         top: 1,
+  //         left: 1,
+  //         blur: 1,
+  //         color: theme.colors.alpha.black[70],
+  //         opacity: 0.5
+  //       }
+  //     },
+  //     dropShadow: {
+  //       enabled: true,
+  //       top: 1,
+  //       left: 1,
+  //       blur: 1,
+  //       color: theme.colors.alpha.black[50],
+  //       opacity: 0.5
+  //     }
+  //   },
+  //   fill: {
+  //     opacity: 1
+  //   },
+  //   labels: ['Bitcoin', 'Ripple', 'Cardano', 'Ethereum'],
+  //   legend: {
+  //     labels: {
+  //       colors: theme.colors.alpha.trueWhite[100]
+  //     },
+  //     show: false
+  //   },
+  //   stroke: {
+  //     width: 0
+  //   },
+  //   theme: {
+  //     mode: theme.palette.mode
+  //   }
+  // };
+
+  // const chartSeries = [10, 20, 25, 45];
 
   return (
-    <Card>
+    <Card style={{ maxHeight: 500 }}>
       <Grid spacing={0} container>
         <Grid item xs={12} md={6}>
           <Box p={4}>
@@ -142,15 +181,13 @@ function AccountBalance() {
             </Typography>
             <Box>
               <Typography variant="h1" gutterBottom>
-                $54,584.23
+                {balance} ETH
               </Typography>
-              <Typography
-                variant="h4"
-                fontWeight="normal"
-                color="text.secondary"
-              >
-                1.0045983485234 BTC
+
+              <Typography variant="h3" gutterBottom>
+                {remainToPay} Remain to pay
               </Typography>
+
               <Box
                 display="flex"
                 sx={{
@@ -166,17 +203,17 @@ function AccountBalance() {
                 >
                   <TrendingUp fontSize="large" />
                 </AvatarSuccess>
-                <Box>
+                {/* <Box>
                   <Typography variant="h4">+ $3,594.00</Typography>
                   <Typography variant="subtitle2" noWrap>
                     this month
                   </Typography>
-                </Box>
+                </Box> */}
               </Box>
             </Box>
             <Grid container spacing={3}>
               <Grid sm item>
-                <Button fullWidth variant="outlined">
+                <Button fullWidth variant="outlined" onClick={sendMoney}>
                   Send
                 </Button>
               </Grid>
@@ -188,7 +225,7 @@ function AccountBalance() {
             </Grid>
           </Box>
         </Grid>
-        <Grid
+        {/* <Grid
           sx={{
             position: 'relative'
           }}
@@ -326,7 +363,7 @@ function AccountBalance() {
               </Grid>
             </Grid>
           </Box>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Card>
   );
