@@ -4,3 +4,9 @@ export interface TransactionDto {
   price: number;
   date: Date;
 }
+
+export interface MarketDto {
+  address?: string;
+  price: number;
+  date: string;
+}

@@ -1,4 +1,4 @@
-export const EW_CONTRACT_ADDRESS = '0xdA3e4092B6329D2A2a49338eFDA4A23ee158dC9d';
+export const EW_CONTRACT_ADDRESS = '0x4B55a3E6592B568737903ff134e534fa18160cEB';
 export const EW_CONTRACT_ABI = {
   abi: [
     {
@@ -430,6 +430,19 @@ export const EW_CONTRACT_ABI = {
           type: 'address'
         }
       ],
+      name: 'resetPayment',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function'
+    },
+    {
+      inputs: [
+        {
+          internalType: 'address',
+          name: '_address',
+          type: 'address'
+        }
+      ],
       name: 'getPaymentTransaction',
       outputs: [
         {
@@ -443,7 +456,13 @@ export const EW_CONTRACT_ABI = {
       constant: true
     },
     {
-      inputs: [],
+      inputs: [
+        {
+          internalType: 'int256',
+          name: 'price',
+          type: 'int256'
+        }
+      ],
       name: 'pay',
       outputs: [],
       stateMutability: 'payable',
@@ -458,8 +477,13 @@ export const EW_CONTRACT_ABI = {
           type: 'address'
         },
         {
-          internalType: 'uint256',
+          internalType: 'int256',
           name: '_price',
+          type: 'int256'
+        },
+        {
+          internalType: 'uint256',
+          name: '_wei',
           type: 'uint256'
         }
       ],

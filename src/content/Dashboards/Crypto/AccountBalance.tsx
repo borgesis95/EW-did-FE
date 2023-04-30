@@ -10,7 +10,13 @@ import {
   ListItemAvatar
 } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { convertCentToEth, convertEthToCent } from '@/utils/utils';
+import {
+  convertCentToEth as convertEurToEth,
+  convertEthToCent,
+  convertEurToCent,
+  convertCentToEth as convertEuroToEth
+} from '@/utils/utils';
+import { getAverage } from '@/api/grid';
 
 const AvatarSuccess = styled(Avatar)(
   ({ theme }) => `
@@ -52,58 +58,123 @@ interface AccountBalanceProps {
   blockchainParams: any;
 }
 
+interface Balance {
+  cent: number;
+  eth: number;
+}
+
 function AccountBalance({ blockchainParams }: AccountBalanceProps) {
-  // const theme = useTheme();
-  const [balance, setBalance] = useState<string>();
+  const subscribe = () => {
+    const contract = blockchainParams.contract;
+    contract.events
+      .TransferReceived({})
+      .on('data', async function (event) {
+        getBalance();
+        getMoneyToPay();
+      })
+      .on('error', console.error);
+
+    contract.events
+      .MoneyReceived({})
+      .on('data', async function (event) {
+        getBalance();
+        getMoneyToPay();
+      })
+      .on('error', console.error);
+  };
+
+  const [balance, setBalance] = useState<Balance>();
   const [remainToPay, setRemainToPay] = useState<number>();
+  const [average, setAveage] = useState<{
+    bids: number;
+    offers: number;
+  }>();
 
   useEffect(() => {
     if (blockchainParams) {
+      subscribe();
       getBalance();
       getMoneyToPay();
+      fetchAverage();
     }
   }, [blockchainParams]);
+
+  const fetchAverage = () => {
+    getAverage().then((response) => {
+      console.log('respnse', response.data.data);
+      setAveage(response.data.data);
+    });
+  };
 
   const getBalance = async () => {
     const account = blockchainParams.accounts[0].toLowerCase();
     const value = await blockchainParams.web3.eth.getBalance(account);
 
-    console.log('VALUE', value);
-    const converted = parseInt(
+    const eth_balance = parseInt(
       blockchainParams.web3.utils.fromWei(value, 'ether')
     );
 
-    console.log('convert', converted);
-    const res = convertEthToCent(converted);
+    const cent_balance = convertEthToCent(eth_balance);
 
-    console.log('converted', res);
-    setBalance('11');
+    setBalance({
+      eth: eth_balance,
+      cent: cent_balance
+    });
   };
 
   const sendMoney = async () => {
-    console.log('eth', blockchainParams.web3.utils);
+    const absValue = Math.abs(remainToPay); // convert in euro
 
-    const convertedPrice = convertCentToEth(parseInt(balance)).toString();
+    const ethereumPrice = convertEurToEth(absValue).toString();
+    const centPrice = absValue * 100;
 
-    const value = blockchainParams.web3.utils.toWei(convertedPrice, 'ether');
+    console.log('eth price:', ethereumPrice);
+    console.log('cent price:', parseInt(centPrice.toFixed(2)));
 
-    console.log('value', value);
+    const value = blockchainParams.web3.utils.toWei(ethereumPrice, 'ether');
+
     const contract = blockchainParams.contract;
     const account = blockchainParams.accounts[0].toLowerCase();
 
-    await contract.methods.pay().send({ from: account, value: value });
+    await contract.methods
+      .pay(parseInt(centPrice.toFixed(2)))
+      .send({ from: account, value: value });
+  };
+
+  const receiveMoney = async () => {
+    const account = blockchainParams.accounts[0].toLowerCase();
+    const contract = blockchainParams.contract;
+
+    console.log('remain:', remainToPay);
+    const cent = convertEurToCent(remainToPay);
+    const eth = convertEuroToEth(remainToPay);
+    const wei = blockchainParams.web3.utils.toWei(eth.toString());
+
+    console.log('wei', wei);
+
+    console.log('cent:', cent);
+    console.log('eth:', eth);
+
+    await contract.methods
+      .withDrawMoney(account, cent, wei)
+      .send({ from: account });
   };
 
   const getMoneyToPay = async () => {
     const account = blockchainParams.accounts[0].toLowerCase();
 
-    console.log('blockchainParams', blockchainParams.contract);
     const value = await blockchainParams.contract.methods
       .getPaymentTransaction(account)
       .call();
 
-    console.log('value', value);
-    setRemainToPay(value);
+    const remainToPay = value / 100;
+    setRemainToPay(remainToPay);
+  };
+
+  /**TODO DELETE */
+  const resetPayment = async () => {
+    console.log('reset');
+    await blockchainParams.contract.methods.resetPaymaent().call();
   };
 
   return (
@@ -116,21 +187,46 @@ function AccountBalance({ blockchainParams }: AccountBalanceProps) {
                 pb: 3
               }}
               variant="h4"
+              className="mt-8"
             >
-              Account Balance
+              Account Balance: {balance?.eth} ETH / {balance?.cent} €
+            </Typography>
+
+            <Typography
+              sx={{
+                pb: 3
+              }}
+              variant="h4"
+            >
+              Average offer: {average?.offers / 100} € /KW
+            </Typography>
+            <Typography
+              sx={{
+                pb: 3
+              }}
+              variant="h4"
+            >
+              Average bids: {average?.bids / 100} € /KW
             </Typography>
             <Box>
-              {balance && (
-                <Typography variant="h3" gutterBottom>
-                  You have to {parseInt(balance) <= 0 ? 'receive' : 'pay'}{' '}
-                  {parseInt(balance) / 100} €
-                </Typography>
-              )}
+              <Typography variant="h3" gutterBottom>
+                You have to{' '}
+                {remainToPay > 0
+                  ? `receive ${remainToPay}`
+                  : `pay ${Math.abs(remainToPay)}`}
+                €
+              </Typography>
             </Box>
             <Box>
-              <Grid sm item>
-                <Button fullWidth variant="contained" onClick={sendMoney}>
-                  {parseInt(balance) < 0 ? 'Receive' : 'Send'}
+              <Grid sm item style={{ marginTop: 32 }}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  disabled={remainToPay == 0}
+                  onClick={remainToPay > 0 ? receiveMoney : sendMoney}
+                  className="mt-8"
+                >
+                  {remainToPay > 0 ? 'Receive' : 'Pay'}
                 </Button>
               </Grid>
             </Box>

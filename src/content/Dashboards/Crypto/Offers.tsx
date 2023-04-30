@@ -18,7 +18,8 @@ import { IOfferForm } from '@/components/AddOfferDialog';
 import { OfferDto } from '@/models/offers';
 import { format } from 'date-fns';
 import CreateOffer from '@/components/CreateOfferDialog/CreateOffer';
-import { convertEuroToEth } from '@/utils/utils';
+import { createOffer } from '@/api/grid';
+import { MarketDto } from '@/api/response.types';
 
 export const AvatarWrapper = styled(Avatar)(
   ({ theme }) => `
@@ -115,12 +116,21 @@ function Offers({ blockchainParams }: OffersProps) {
   const handleConfirmCreationOffer = async (form: IOfferForm) => {
     const contract = blockchainParams.contract;
     const account = blockchainParams.accounts[0].toLowerCase();
-
     await contract.methods
       .createOffer(account, form.price, Date.now())
       .send({ from: account });
+    createOfferOnDatabase(account, form.price);
 
     handleDialogToggle();
+  };
+
+  const createOfferOnDatabase = async (account, price) => {
+    const body: MarketDto = {
+      address: account,
+      date: new Date().toString(),
+      price: price
+    };
+    await createOffer(body);
   };
 
   /** */

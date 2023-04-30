@@ -16,6 +16,8 @@ import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import { useEffect, useState } from 'react';
 import { format } from 'date-fns';
 import AddRequestDialog, { IRequestForm } from '@/components/AddRequestDialog';
+import { MarketDto } from '@/api/response.types';
+import { createBid } from '@/api/grid';
 
 const AvatarWrapper = styled(Avatar)(
   ({ theme }) => `
@@ -114,6 +116,9 @@ function Demands({ blockchainParams }: DemandsProps) {
     await contract.methods
       .createBid(account, form.price, Date.now())
       .send({ from: account });
+
+    await createDemandsOnDatabase(account, form.price);
+
     handleDialogToggle();
   };
 
@@ -146,6 +151,17 @@ function Demands({ blockchainParams }: DemandsProps) {
       demands[0].active = true;
       setDemandsList(demands);
     }
+  };
+
+  const createDemandsOnDatabase = (account, price) => {
+    const body: MarketDto = {
+      address: account,
+      date: new Date().toString(),
+      price: price
+    };
+    createBid(body).then((response) => {
+      console.log('response:', response);
+    });
   };
 
   const renderDemands = () => {
