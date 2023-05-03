@@ -2,7 +2,8 @@ import axios from '@/config/axios_instance';
 
 export enum SourceEnergyEnum {
   Solar = 1,
-  Wind = 2
+  Wind = 2,
+  Battery = 3
 }
 
 export interface AssetDto {

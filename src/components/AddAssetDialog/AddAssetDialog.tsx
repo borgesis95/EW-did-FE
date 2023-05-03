@@ -9,6 +9,7 @@ import {
 import { StyledDialog, StyledDialogTitle } from '../Dialog/CDialog';
 import { useState } from 'react';
 import { AssetDto, SourceEnergyEnum, createAssetApi } from '@/api/assets';
+import { DatePicker } from '@mui/x-date-pickers';
 interface AddAssetDialogProps {
   open: boolean;
   handleToggle: () => void;
@@ -52,9 +53,8 @@ function AddAssetDialog({
           />
           <Select
             className="col-span-12"
-            labelId="typeOfEnergy"
             id="typeOfEnergy"
-            label="Age"
+            label="Casd"
             placeholder="Choose type of energy you provide"
             onChange={(e) =>
               handleChange('source', e.target.value as SourceEnergyEnum)
@@ -62,7 +62,22 @@ function AddAssetDialog({
           >
             <MenuItem value={SourceEnergyEnum.Solar}>Solar</MenuItem>
             <MenuItem value={SourceEnergyEnum.Wind}>Wind</MenuItem>
+            <MenuItem value={SourceEnergyEnum.Battery}>Battery</MenuItem>
           </Select>
+          {bodyAsset?.source == SourceEnergyEnum.Battery && (
+            <TextField
+              id="kwStorage"
+              label="KW Storage"
+              className="col-span-12"
+              type="number"
+              onChange={(e) => handleChange('kw', e.target.value)}
+            ></TextField>
+          )}
+          <DatePicker
+            className="col-span-12"
+            label="Basic date picker"
+            onChange={(e: any) => handleChange('date', e.target.value)}
+          />{' '}
         </div>
       </DialogContent>
       <DialogActions>
