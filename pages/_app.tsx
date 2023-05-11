@@ -48,6 +48,7 @@ function DerManagementApp(props: DerManagementProps) {
 
   useEffect(() => {
     initializeBlockchain();
+    //@ts-ignore
 
     //@ts-ignore
     if (window.ethereum !== null) {
@@ -82,27 +83,29 @@ function DerManagementApp(props: DerManagementProps) {
   Router.events.on('routeChangeComplete', nProgress.done);
 
   return (
-    <Provider store={store}>
-      <LocalizationProvider dateAdapter={AdapterDateFns} locale={it}>
-        <BlockchainContext.Provider value={blockchainSettings}>
-          <CacheProvider value={emotionCache}>
-            <Head>
-              <title>Market P2P</title>
-              <meta
-                name="viewport"
-                content="width=device-width, initial-scale=1, shrink-to-fit=no"
-              />
-            </Head>
-            <SidebarProvider>
-              <ThemeProvider>
-                <CssBaseline />
-                {getLayout(<Component {...pageProps} />)}
-              </ThemeProvider>
-            </SidebarProvider>
-          </CacheProvider>
-        </BlockchainContext.Provider>
-      </LocalizationProvider>
-    </Provider>
+    <ErrorBoundary fallback={<div>ERROR</div>}>
+      <Provider store={store}>
+        <LocalizationProvider dateAdapter={AdapterDateFns} locale={it}>
+          <BlockchainContext.Provider value={blockchainSettings}>
+            <CacheProvider value={emotionCache}>
+              <Head>
+                <title>DER MANAGMENT</title>
+                <meta
+                  name="viewport"
+                  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+                />
+              </Head>
+              <SidebarProvider>
+                <ThemeProvider>
+                  <CssBaseline />
+                  {getLayout(<Component {...pageProps} />)}
+                </ThemeProvider>
+              </SidebarProvider>
+            </CacheProvider>
+          </BlockchainContext.Provider>
+        </LocalizationProvider>
+      </Provider>
+    </ErrorBoundary>
   );
 }
 
