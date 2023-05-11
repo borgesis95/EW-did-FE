@@ -31,12 +31,18 @@ function AddAssetDialog({
   };
 
   const handleConfirm = () => {
-    createAssetApi(bodyAsset).then((response) => {
-      console.log('response create asset:', response);
+    createAssetApi(bodyAsset).then(() => {
       onSuccess();
     });
   };
 
+  const isDisabled = () => {
+    if (bodyAsset?.nickname && bodyAsset?.date && bodyAsset?.source) {
+      return false;
+    }
+
+    return true;
+  };
   return (
     <StyledDialog maxWidth="lg" open={open} onClose={handleToggle}>
       <StyledDialogTitle id="customized-dialog-title" onClose={handleToggle}>
@@ -51,6 +57,11 @@ function AddAssetDialog({
             variant="outlined"
             onChange={(e) => handleChange('nickname', e.target.value)}
           />
+          <DatePicker
+            className="col-span-12"
+            label="Date"
+            onChange={(e: string) => handleChange('date', e)}
+          />{' '}
           <Select
             className="col-span-12"
             id="typeOfEnergy"
@@ -73,15 +84,10 @@ function AddAssetDialog({
               onChange={(e) => handleChange('kw', e.target.value)}
             ></TextField>
           )}
-          <DatePicker
-            className="col-span-12"
-            label="Basic date picker"
-            onChange={(e: any) => handleChange('date', e.target.value)}
-          />{' '}
         </div>
       </DialogContent>
       <DialogActions>
-        <Button autoFocus onClick={handleConfirm}>
+        <Button autoFocus onClick={handleConfirm} disabled={isDisabled()}>
           Save changes
         </Button>
       </DialogActions>

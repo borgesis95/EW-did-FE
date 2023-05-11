@@ -1,15 +1,8 @@
 import {
   Button,
   Card,
-  Grid,
   Box,
-  CardContent,
   Typography,
-  Avatar,
-  alpha,
-  Tooltip,
-  CardActionArea,
-  styled,
   TableCell,
   TableContainer,
   TableHead,
@@ -18,8 +11,7 @@ import {
   TableBody,
   Paper
 } from '@mui/material';
-import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
-import { AvatarWrapper, CardAddAction } from './Offers';
+
 import { useEffect, useState } from 'react';
 import AddAssetDialog from '@/components/AddAssetDialog/AddAssetDialog';
 import { AssetDto, SourceEnergyEnum, getAssetsApi } from '@/api/assets';
@@ -48,6 +40,7 @@ function Assets({ blockchainParams }: AssetsProps) {
   };
 
   const handleDialogToggle = () => {
+    fetchAssets();
     setIsCreateAssetOpen(!isCreateAssetOpen);
   };
 
@@ -56,15 +49,13 @@ function Assets({ blockchainParams }: AssetsProps) {
   };
 
   const renderSourceIcon = (sourceType: SourceEnergyEnum) => {
-    console.log('source', sourceType);
-
     switch (sourceType) {
       case SourceEnergyEnum.Solar:
         return (
           <img
             alt="solar"
-            height={25}
-            width={25}
+            height={40}
+            width={40}
             src="/static/images/solar-panel.png"
           />
         );
@@ -72,7 +63,7 @@ function Assets({ blockchainParams }: AssetsProps) {
       case SourceEnergyEnum.Wind:
         return (
           <img
-            alt="solar"
+            alt="wind"
             height={40}
             width={40}
             src="/static/images/windmill.png"
@@ -125,7 +116,7 @@ function Assets({ blockchainParams }: AssetsProps) {
                 <TableCell align="left">Nickname</TableCell>
                 <TableCell align="left">Date</TableCell>
                 <TableCell align="left">Kw</TableCell>
-                <TableCell align="left">load</TableCell>
+                {/* <TableCell align="left">load</TableCell> */}
               </TableRow>
             </TableHead>
 
@@ -144,10 +135,11 @@ function Assets({ blockchainParams }: AssetsProps) {
                   </TableCell>
                   <TableCell align="left">{row.nickname}</TableCell>
 
-                  <TableCell align="left"></TableCell>
                   <TableCell align="left">
-                    <Box textAlign="left" className="flex"></Box>
+                    {row.date && format(new Date(row.date), 'dd/MM/yyyy')}
                   </TableCell>
+                  <TableCell align="left">{row.kw}</TableCell>
+                  {/* <TableCell align="left">TODO</TableCell> */}
                 </TableRow>
               ))}
             </TableBody>

@@ -78,13 +78,6 @@ function DashboardMicrogrid() {
             spacing={4}
             paddingTop={10}
           >
-            {/* <Grid item lg={12} paddingTop={20}>
-              <DIDTable
-                onCreateAsset={onCreateAsset}
-                loading={assets?.loading}
-                assets={assets?.assets}
-              />
-            </Grid> */}
             <Grid item lg={12} paddingTop={20}>
               <Assets blockchainParams={null} />
             </Grid>

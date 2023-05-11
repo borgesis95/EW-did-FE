@@ -23,6 +23,7 @@ import { EW_CONTRACT_ABI, EW_CONTRACT_ADDRESS } from '../contracts/ew_contract';
 import it from 'date-fns/locale/it';
 import { Provider } from 'react-redux';
 import store from '@/store';
+import { ErrorBoundary } from 'react-error-boundary';
 const clientSideEmotionCache = createEmotionCache();
 
 type NextPageWithLayout = NextPage & {
@@ -47,7 +48,17 @@ function DerManagementApp(props: DerManagementProps) {
 
   useEffect(() => {
     initializeBlockchain();
+
+    //@ts-ignore
+    if (window.ethereum !== null) {
+      //@ts-ignore
+      window.ethereum.on('accountsChanged', onAccountChange);
+    }
   }, []);
+
+  const onAccountChange = () => {
+    initializeBlockchain();
+  };
 
   const initializeBlockchain = async () => {
     const web3 = new Web3(Web3.givenProvider || 'http://localhost:7545');
@@ -76,7 +87,7 @@ function DerManagementApp(props: DerManagementProps) {
         <BlockchainContext.Provider value={blockchainSettings}>
           <CacheProvider value={emotionCache}>
             <Head>
-              <title>DER MANAGMENT</title>
+              <title>Market P2P</title>
               <meta
                 name="viewport"
                 content="width=device-width, initial-scale=1, shrink-to-fit=no"

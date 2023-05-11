@@ -77,17 +77,13 @@ function Login() {
   };
 
   const onLogin = async (providerType: ProviderType) => {
-    // const { signerService: signService } = await initSignerService(
-    //   providerType
-    // );
-    // signerService = signService;
-
     if (!web3) {
       web3 = await initWeb3();
     }
 
-    console.log('blockchain', blockchainParams);
-    const publicAddress = blockchainParams.accounts[0].toLowerCase();
+    console.log('BLOCKCHAIN PARAMS', blockchainParams?.accounts);
+
+    const publicAddress = blockchainParams?.accounts[0]?.toLowerCase();
     axios.get<{ nonce: string }>(`user/${publicAddress}`).then((response) => {
       handleSignMessage(publicAddress, response.data.nonce);
     });
@@ -102,7 +98,7 @@ function Login() {
       );
       handleAuthenticate(address, signature);
     } catch (err) {
-      throw new Error('You need to sign the message to be able to log in.');
+      console.error(err);
     }
   };
 
@@ -114,11 +110,7 @@ function Login() {
 
     axios.post(`user/auth`, body).then((response) => {
       const jwtToken = response.data.data;
-
-      console.log('RESPONSE', response);
-
       const jwt_decoded = jwt.decode(jwtToken) as JwtToken;
-
       if (jwt_decoded) {
         console.log('jwt', jwt_decoded);
         const cookiesToSave = {

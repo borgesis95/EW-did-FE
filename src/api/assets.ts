@@ -7,10 +7,11 @@ export enum SourceEnergyEnum {
 }
 
 export interface AssetDto {
-  //TODO: Aggiungere DID
   address: string;
   source: SourceEnergyEnum;
   nickname: string;
+  date: string;
+  kw: number;
 }
 
 export const createAssetApi = (body: AssetDto) => {
