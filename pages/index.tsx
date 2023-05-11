@@ -2,16 +2,16 @@ import Head from 'next/head';
 import { useContext } from 'react';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import { Container, Grid } from '@mui/material';
-import Offers from '@/content/Dashboards/Crypto/Offers';
+import Offers from '@/content/Dashboards/Offers';
 import { useEffect, useState } from 'react';
 import { Asset, AssetsService, initWithMetamask } from 'iam-client-lib';
 import { BlockchainContext } from '@/contexts/BlockchainContext';
-import Demands from '@/content/Dashboards/Crypto/Demands';
+import Demands from '@/content/Dashboards/Demands';
 import EnergyChart from '@/components/EnergyChart/EnergyChart';
 import BarEnergyChart from '@/components/BarChart/BarChart';
-import AccountBalance from '@/content/Dashboards/Crypto/AccountBalance';
+import AccountBalance from '@/content/Dashboards/AccountBalance';
 import Transactions from '@/content/Dashboards/Transactions';
-import Assets from '@/content/Dashboards/Crypto/Assets';
+import Assets from '@/content/Dashboards/Assets';
 
 interface DataAssets {
   loading: boolean;
