@@ -37,7 +37,6 @@ export const assetsSlice = createSlice({
         fetchAssetsList.fulfilled,
         (state: AssetsState, action: PayloadAction<AssetDto[]>) => {
           state.isLoading = true;
-          console.log('action.payload', action.payload);
           state.assets = action.payload;
         }
       );

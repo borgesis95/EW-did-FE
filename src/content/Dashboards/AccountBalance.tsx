@@ -101,7 +101,6 @@ function AccountBalance({ blockchainParams }: AccountBalanceProps) {
 
   const fetchAverage = () => {
     getAverage().then((response) => {
-      console.log('respnse', response.data.data);
       setAveage(response.data.data);
     });
   };
@@ -128,9 +127,6 @@ function AccountBalance({ blockchainParams }: AccountBalanceProps) {
     const ethereumPrice = convertEurToEth(absValue).toString();
     const centPrice = absValue * 100;
 
-    console.log('eth price:', ethereumPrice);
-    console.log('cent price:', parseInt(centPrice.toFixed(2)));
-
     const value = blockchainParams.web3.utils.toWei(ethereumPrice, 'ether');
 
     const contract = blockchainParams.contract;
@@ -145,15 +141,9 @@ function AccountBalance({ blockchainParams }: AccountBalanceProps) {
     const account = blockchainParams.accounts[0].toLowerCase();
     const contract = blockchainParams.contract;
 
-    console.log('remain:', remainToPay);
     const cent = convertEurToCent(remainToPay);
     const eth = convertEuroToEth(remainToPay);
     const wei = blockchainParams.web3.utils.toWei(eth.toString());
-
-    console.log('wei', wei);
-
-    console.log('cent:', cent);
-    console.log('eth:', eth);
 
     await contract.methods
       .withDrawMoney(account, cent, wei)
@@ -173,7 +163,6 @@ function AccountBalance({ blockchainParams }: AccountBalanceProps) {
 
   /**TODO DELETE */
   const resetPayment = async () => {
-    console.log('reset');
     await blockchainParams.contract.methods.resetPaymaent().call();
   };
 

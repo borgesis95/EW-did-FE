@@ -81,8 +81,6 @@ function Login() {
       web3 = await initWeb3();
     }
 
-    console.log('BLOCKCHAIN PARAMS', blockchainParams?.accounts);
-
     const publicAddress = blockchainParams?.accounts[0]?.toLowerCase();
     axios.get<{ nonce: string }>(`user/${publicAddress}`).then((response) => {
       handleSignMessage(publicAddress, response.data.nonce);
@@ -112,7 +110,6 @@ function Login() {
       const jwtToken = response.data.data;
       const jwt_decoded = jwt.decode(jwtToken) as JwtToken;
       if (jwt_decoded) {
-        console.log('jwt', jwt_decoded);
         const cookiesToSave = {
           user: jwt_decoded?.email,
           jwt: jwtToken

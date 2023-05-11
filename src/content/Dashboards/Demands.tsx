@@ -104,7 +104,6 @@ function Demands({ blockchainParams }: DemandsProps) {
     contract.events
       .BidCreated({})
       .on('data', async function (event) {
-        console.log(event.returnValues);
         fetchMyDemands();
       })
       .on('error', console.error);
@@ -159,9 +158,7 @@ function Demands({ blockchainParams }: DemandsProps) {
       date: new Date().toString(),
       price: price
     };
-    createBid(body).then((response) => {
-      console.log('response:', response);
-    });
+    createBid(body).then((response) => {});
   };
 
   const renderDemands = () => {

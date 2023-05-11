@@ -107,7 +107,6 @@ function Offers({ blockchainParams }: OffersProps) {
     contract.events
       .OfferCreated({})
       .on('data', async function (event) {
-        console.log(event.returnValues);
         fetchOffersBdyId();
       })
       .on('error', console.error);

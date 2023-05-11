@@ -33,14 +33,14 @@ function DashboardMicrogrid() {
     // initMetamask();
   }, []);
 
-  const initMetamask = async () => {
-    const { connectToCacheServer } = await initWithMetamask();
-    const { assetsService } = await connectToCacheServer();
-    setAssetService(assetService);
-    assService = assetsService;
+  // const initMetamask = async () => {
+  //   const { connectToCacheServer } = await initWithMetamask();
+  //   const { assetsService } = await connectToCacheServer();
+  //   setAssetService(assetService);
+  //   assService = assetsService;
 
-    fetchAssets();
-  };
+  //   fetchAssets();
+  // };
 
   const fetchAssets = async () => {
     setAssets({
@@ -55,18 +55,18 @@ function DashboardMicrogrid() {
     });
   };
 
-  const onCreateAsset = async () => {
-    setAssets({
-      ...assets,
-      loading: true
-    });
-    const response = await assService?.registerAsset();
-    fetchAssets();
-  };
+  // const onCreateAsset = async () => {
+  //   setAssets({
+  //     ...assets,
+  //     loading: true
+  //   });
+  //   const response = await assService?.registerAsset();
+  //   fetchAssets();
+  // };
   return (
     <>
       <Head>
-        <title>Microgrid management</title>
+        <title>P2P Market</title>
       </Head>
       <div className="p-8">
         <Container maxWidth="lg">

@@ -6,7 +6,6 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    console.log('interceptors');
     const cookies = Cookie.get('user') ? JSON.parse(Cookie.get('user')) : null;
 
     if (cookies && cookies.jwt) {
