@@ -89,7 +89,7 @@ function DerManagementApp(props: DerManagementProps) {
           <BlockchainContext.Provider value={blockchainSettings}>
             <CacheProvider value={emotionCache}>
               <Head>
-                <title>DER MANAGMENT</title>
+                <title>P2P Market</title>
                 <meta
                   name="viewport"
                   content="width=device-width, initial-scale=1, shrink-to-fit=no"

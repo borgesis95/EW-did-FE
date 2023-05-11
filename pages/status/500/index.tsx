@@ -13,7 +13,6 @@ import BaseLayout from 'src/layouts/BaseLayout';
 
 import Head from 'next/head';
 import RefreshTwoToneIcon from '@mui/icons-material/RefreshTwoTone';
-import LoadingButton from '@mui/lab/LoadingButton';
 
 const GridWrapper = styled(Grid)(
   ({ theme }) => `
@@ -90,15 +89,6 @@ function Status500() {
                   The server encountered an internal error and was not able to
                   complete your request
                 </Typography>
-                <LoadingButton
-                  onClick={handleClick}
-                  loading={pending}
-                  variant="outlined"
-                  color="primary"
-                  startIcon={<RefreshTwoToneIcon />}
-                >
-                  Refresh view
-                </LoadingButton>
                 <Button href="/" variant="contained" sx={{ ml: 1 }}>
                   Go back
                 </Button>
