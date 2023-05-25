@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { Button, FormControl, TextField } from '@mui/material';
+import { Button, FormControl, TextField, Typography } from '@mui/material';
 import { Box, Container } from '@mui/system';
 import { useEffect, useState } from 'react';
 import { createUserApi, RegistrationUser } from '@/api/user';
@@ -24,7 +24,7 @@ function Register() {
     });
   };
 
-  const handleSignIn = async () => {
+  const handleSignup = async () => {
     if (!web3) {
       web3 = await initWeb3();
     }
@@ -48,6 +48,18 @@ function Register() {
         </Head>
         <div className="flex justify-center items-center p-14">
           <Container maxWidth="sm">
+            <Box textAlign="center" className="flex justify-center">
+              <img
+                alt="ewlogo"
+                height={350}
+                width={350}
+                src="/static/images/logo-app.png"
+              />
+            </Box>
+            <Typography variant="h3" className="flex justify-center !my-4 ">
+              Sign up
+            </Typography>
+
             <FormControl fullWidth>
               <TextField
                 id="username"
@@ -74,9 +86,9 @@ function Register() {
                 <Button
                   variant="contained"
                   style={{ width: '30%' }}
-                  onClick={handleSignIn}
+                  onClick={handleSignup}
                 >
-                  Sign in
+                  Sign up
                 </Button>
               </div>
             </FormControl>

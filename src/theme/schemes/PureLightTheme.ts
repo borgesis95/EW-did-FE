@@ -1,8 +1,6 @@
 import { alpha, createTheme, lighten, darken } from '@mui/material';
 import { itIT } from '@mui/x-date-pickers';
 
-// import i18n from 'src/i18n/i18n';
-
 const themeColors = {
   primary: '#5569ff',
   secondary: '#6E759F',

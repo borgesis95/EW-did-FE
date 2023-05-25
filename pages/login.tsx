@@ -123,7 +123,7 @@ function Login() {
   return (
     <>
       <Head>
-        <title>Login Microgrid</title>
+        <title>Login Market</title>
       </Head>
       <MainContent>
         <TopWrapper>
@@ -131,9 +131,9 @@ function Login() {
             <Box textAlign="center" className="flex justify-center">
               <img
                 alt="ewlogo"
-                height={180}
-                width={180}
-                src="/static/images/ew-logo.png"
+                height={350}
+                width={350}
+                src="/static/images/logo-app.png"
               />
             </Box>
             <Container maxWidth="sm">
